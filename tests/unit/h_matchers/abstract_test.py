@@ -5,7 +5,7 @@ from h_matchers.abstract import Anything
 
 
 class TestAnything:
-    @pytest.mark.parametrize("item,description", DataTypes.parameters())
-    def test_it_matches(self, item, description):
+    @pytest.mark.parametrize("item,_", DataTypes.parameters())
+    def test_it_matches(self, item, _):
         assert Anything() == item
         assert item == Anything()

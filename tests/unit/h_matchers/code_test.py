@@ -10,8 +10,8 @@ class TestAnyInstanceOfClass:
         assert ValueError() == matcher
         assert matcher == ValueError()
 
-    @pytest.mark.parametrize("item,description", DataTypes.parameters())
-    def test_it_does_not_match(self, item, description):
+    @pytest.mark.parametrize("item,_", DataTypes.parameters())
+    def test_it_does_not_match(self, item, _):
         matcher = AnyInstanceOfClass(ValueError)
         assert matcher != item
         assert item != matcher
@@ -19,15 +19,15 @@ class TestAnyInstanceOfClass:
 
 class TestAnyFunction:
     @pytest.mark.parametrize(
-        "item,description", DataTypes.parameters(exact=DataTypes.Groups.FUNCTIONS)
+        "item,_", DataTypes.parameters(exact=DataTypes.Groups.FUNCTIONS)
     )
-    def test_it_matches(self, item, description):
+    def test_it_matches(self, item, _):
         assert AnyFunction() == item
         assert item == AnyFunction()
 
     @pytest.mark.parametrize(
-        "item,description", DataTypes.parameters(exclude=DataTypes.Groups.FUNCTIONS)
+        "item,_", DataTypes.parameters(exclude=DataTypes.Groups.FUNCTIONS)
     )
-    def test_it_does_not_match(self, item, description):
+    def test_it_does_not_match(self, item, _):
         assert AnyFunction() != item
         assert item != AnyFunction()

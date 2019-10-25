@@ -7,15 +7,14 @@ class _PrivateClass:
 
     @classmethod
     def class_method(cls):
-        pass  # pragma: no cover
+        """A dummy function"""
 
     def instance_method(self):
-        pass  # pragma: no cover
+        """A dummy function"""
 
 
 def _function():
     """A dummy function"""
-    pass  # pragma: no cover
 
 
 PRIVATE_CLASS = _PrivateClass
