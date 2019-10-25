@@ -5,9 +5,22 @@ Test objects which pass equality checks with other objects
 Usage
 -----
 
-TODO: Use this section to explain how someone would use your package in their project.
-For example: how to add the package to a project as a requirement, how to configure the
-package, how to initialize the package, and how to call it.
+```python
+from h_matchers import Any
+import re
+
+assert [1, ValueError(), print] == [
+        Any(),
+        Any.instance_of(ValueError),
+        Any.function()
+    ]
+
+assert ["easy", "string", "matching"] == [
+        Any.string(),
+        Any.string.containing("in"),
+        Any.string.matching('^.*CHING!', re.IGNORECASE)
+    ]
+```
 
 Hacking
 -------

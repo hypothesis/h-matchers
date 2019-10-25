@@ -3,17 +3,12 @@
 
 import re
 
-from h_matchers.core import LambdaMatcher
+from h_matchers.core import Matcher
+
+__all__ = ["AnyString", "AnyStringContaining", "AnyStringMatching"]
 
 
-class AnyString(LambdaMatcher):
-    """A class that matches any string"""
-
-    def __init__(self):
-        super().__init__("* any string *", lambda other: isinstance(other, str))
-
-
-class AnyStringContaining(LambdaMatcher):
+class AnyStringContaining(Matcher):
     """A class that matches any string with a certain substring"""
 
     def __init__(self, sub_string):
@@ -23,7 +18,7 @@ class AnyStringContaining(LambdaMatcher):
         )
 
 
-class AnyStringMatching(LambdaMatcher):
+class AnyStringMatching(Matcher):
     """A class that matches any regular expression"""
 
     def __init__(self, pattern, flags=0):
@@ -35,3 +30,13 @@ class AnyStringMatching(LambdaMatcher):
         super().__init__(
             pattern, lambda other: isinstance(other, str) and regex.match(other)
         )
+
+
+class AnyString(Matcher):
+    """A class that matches any string"""
+
+    matching = AnyStringMatching
+    containing = AnyStringContaining
+
+    def __init__(self):
+        super().__init__("* any string *", lambda other: isinstance(other, str))

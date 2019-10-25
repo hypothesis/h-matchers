@@ -1,18 +1,18 @@
 import pytest
 from tests.unit.data_types import DataTypes
 
-from h_matchers.code import AnyFunction, AnyInstanceOfClass
+from h_matchers.code import AnyFunction, AnyInstanceOf
 
 
-class TestAnyInstanceOfClass:
+class TestAnyInstanceOf:
     def test_it_matches(self):
-        matcher = AnyInstanceOfClass(ValueError)
+        matcher = AnyInstanceOf(ValueError)
         assert ValueError() == matcher
         assert matcher == ValueError()
 
     @pytest.mark.parametrize("item,_", DataTypes.parameters())
     def test_it_does_not_match(self, item, _):
-        matcher = AnyInstanceOfClass(ValueError)
+        matcher = AnyInstanceOf(ValueError)
         assert matcher != item
         assert item != matcher
 
