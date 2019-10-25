@@ -1,3 +1,6 @@
+"""
+The core libraries for matching. These are not intended to be used directly.
+"""
 # pylint: disable=too-few-public-methods
 
 

@@ -1,3 +1,6 @@
+"""
+Abstract or combinatorial matchers.
+"""
 # pylint: disable=too-few-public-methods
 
 from h_matchers.core import LambdaMatcher

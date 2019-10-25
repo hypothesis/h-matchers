@@ -1,8 +1,10 @@
 """
-Classes implementing the matcher pattern for comparing to
-functions and classes etc.
+Classes implementing the matcher pattern for comparing to functions and
+classes etc.
 """
 # pylint: disable=too-few-public-methods
+
+from inspect import isclass
 
 from h_matchers.core import LambdaMatcher
 
@@ -15,7 +17,9 @@ class AnyInstanceOfClass(LambdaMatcher):
 
 
 class AnyFunction(LambdaMatcher):
-    """A class that matches any callable object"""
+    """A class that matches any function, but not classes"""
 
     def __init__(self):
-        super().__init__("* any callable *", callable)
+        super().__init__(
+            "* any callable *", lambda item: callable(item) and not isclass(item)
+        )
