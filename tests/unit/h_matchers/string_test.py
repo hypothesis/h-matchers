@@ -22,7 +22,7 @@ class TestAnyString:
         assert item != AnyString()
 
     @pytest.mark.parametrize("attribute", ["containing", "matching"])
-    def it_has_expected_attributes(self, attribute):
+    def test_it_has_expected_attributes(self, attribute):
         assert hasattr(AnyString, attribute)
 
 
