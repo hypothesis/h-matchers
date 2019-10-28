@@ -3,32 +3,7 @@ A collection of flexible matchers for various collection types in a
 fluent style.
 """
 from h_matchers.core import Matcher
-
-
-# Pylint doesn't understand this is a decorator
-class fluent_entrypoint:  # pylint: disable=invalid-name
-    """
-    A decorator allowing a method on a class to act as either an instance
-    method, or a class method (which will first create a blank instance of the
-    class).
-    """
-
-    instance = None
-
-    def __init__(self, function):
-        self.function = function
-
-    def __get__(self, instance, owner):
-        # If we have been called in a classmethod context, create a new
-        # instance of the owning object
-        if instance is None:
-            instance = owner()
-        self.instance = instance
-
-        return self.__call__
-
-    def __call__(self, *args, **kwargs):
-        return self.function(self.instance, *args, **kwargs)
+from h_matchers.decorator import fluent_entrypoint
 
 
 class AnyCollection(Matcher):
@@ -38,7 +13,6 @@ class AnyCollection(Matcher):
     """
 
     _exact_type = None
-    _exact_size = None
     _min_size = None
     _max_size = None
     _items = None
@@ -56,10 +30,10 @@ class AnyCollection(Matcher):
         else:
             parts.append("iterable")
 
-        if self._exact_size:
-            parts.append(f"of length {self._exact_size}")
-        elif self._min_size is not None or self._max_size is not None:
-            if self._min_size is not None and self._max_size is not None:
+        if self._min_size is not None or self._max_size is not None:
+            if self._min_size == self._max_size:
+                parts.append(f"of length {self._min_size}")
+            elif self._min_size is not None and self._max_size is not None:
                 parts.append(
                     f"with length between {self._min_size} and {self._max_size}"
                 )
@@ -125,20 +99,19 @@ class AnyCollection(Matcher):
         :return: self - for fluent chaining
         :rtype: AnyCollection
         """
-        if strict and exact is None and at_least is None and at_most is None:
+        if exact is not None:
+            self._min_size = exact
+            self._max_size = exact
+
+        elif strict and at_least is None and at_most is None:
             raise ValueError("At least one option should not be None")
 
-        if at_least is not None and at_most is not None:
-            if at_least > at_most:
+        else:
+            if at_least is not None and at_most is not None and at_least > at_most:
                 raise ValueError("The upper bound must be higher than the lower bound")
 
-            if at_least == at_most:
-                exact = at_most
-                at_most = at_least = None
-
-        self._exact_size = exact
-        self._min_size = at_least
-        self._max_size = at_most
+            self._min_size = at_least
+            self._max_size = at_most
 
         return self
 
@@ -168,7 +141,7 @@ class AnyCollection(Matcher):
         return self
 
     @fluent_entrypoint
-    def containing_exactly(self, items):
+    def only_containing(self, items):
         """
         Specify this item must contain exactly the specified items. The semantics
         are the same as `containing()` except the lengths must match too.
@@ -207,9 +180,6 @@ class AnyCollection(Matcher):
 
     def _size_check(self, other):
         """Run the size check (if any)"""
-        if self._exact_size is not None:
-            return len(other) == self._exact_size
-
         if self._min_size and len(other) < self._min_size:
             return False
 

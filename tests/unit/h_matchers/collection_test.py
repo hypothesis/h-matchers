@@ -52,12 +52,6 @@ class TestAnyCollection:
         with pytest.raises(ValueError):
             AnyCollection().of_size(at_least=100, at_most=1)
 
-    def test_it_sets_exact_with_exact_boundaries(self):
-        matcher = AnyCollection().of_size(at_most=10, at_least=10)
-        assert matcher._exact_size == 10
-        assert matcher._min_size is None
-        assert matcher._max_size is None
-
     def test_it_matches_maximum_size(self):
         matcher = AnyCollection().of_size(at_most=2)
 
@@ -73,12 +67,12 @@ class TestAnyCollection:
         assert matcher != [0, 2, 1, 3]
 
     def test_it_matches_generators(self):
-        matcher = AnyCollection().containing_exactly([0, 1, 2])
+        matcher = AnyCollection().only_containing([0, 1, 2])
 
         assert matcher == iter(range(3))
         assert iter(range(3)) == matcher
 
-        non_matcher = AnyCollection().containing_exactly([2, 1, 0])
+        non_matcher = AnyCollection().only_containing([2, 1, 0])
         assert non_matcher != iter(range(3))
         assert iter(range(3)) != non_matcher
 
@@ -91,7 +85,7 @@ class TestAnyCollection:
         assert matcher == [0, 2, 1, 3]
 
     def test_it_tests_containment_and_length(self):
-        matcher = AnyCollection().containing_exactly({1, 2})
+        matcher = AnyCollection().only_containing({1, 2})
 
         assert matcher == {2: "b", 1: "a"}
         assert matcher == {2, 1}
@@ -143,6 +137,6 @@ class TestAnyCollection:
         matcher = AnyCollection.of_size(2).containing([1, 2]).of_type(list)
 
         assert isinstance(matcher, AnyCollection)
-        assert matcher._exact_size == 2
+        assert matcher._min_size == 2
         assert matcher._items == [1, 2]
         assert matcher._exact_type == list
