@@ -16,6 +16,13 @@ class AnyInstanceOf(Matcher):
         super().__init__(klass.__name__, lambda other: isinstance(other, klass))
 
 
+class AnyCallable(Matcher):
+    """A class that matches any callable at all"""
+
+    def __init__(self):
+        super().__init__("* any callable *", callable)
+
+
 class AnyFunction(Matcher):
     """Matches any function, but not classes."""
 
