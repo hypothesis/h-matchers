@@ -14,7 +14,8 @@ class TestAnything:
         assert item == Any()
 
     @pytest.mark.parametrize(
-        "attribute", ["instance_of", "string", "function", "callable", "list", "set"]
+        "attribute",
+        ["instance_of", "string", "function", "callable", "list", "set", "int"],
     )
     def test_it_has_expected_attributes(self, attribute):
         assert hasattr(Any, attribute)
@@ -25,7 +26,7 @@ class TestAnything:
 
         matcher_fluent = Any.list.of_size(2)
         assert isinstance(matcher_fluent, AnyList)
-        assert matcher_fluent._exact_size == 2
+        assert matcher_fluent._min_size == 2
 
     def test_it_provides_a_set_matcher(self):
         matcher = Any.set()
@@ -33,4 +34,4 @@ class TestAnything:
 
         matcher_fluent = Any.set.of_size(2)
         assert isinstance(matcher_fluent, AnySet)
-        assert matcher_fluent._exact_size == 2
+        assert matcher_fluent._min_size == 2

@@ -77,6 +77,8 @@ class Groups:
 
     STRINGS = {DataTypes.STRING, DataTypes.FALSY_STRING}
 
+    INTS = {DataTypes.INT, DataTypes.FALSY_INT}
+
     ITERABLES = STRINGS | {
         DataTypes.LIST,
         DataTypes.SET,
