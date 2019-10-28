@@ -189,13 +189,18 @@ class AnyCollection(Matcher):
         elif not hasattr(other, "__iter__") and not hasattr(other, "__iter__"):
             return False
 
-        if not self._size_check(other):
+        # Take a copy in-case we were provided a generator. This lets us
+        # exhaust it and then measure the size. This will fail for infinite
+        # generators etc.
+        copy = list(other)
+
+        if not self._size_check(copy):
             return False
 
-        if not self._item_type_check(other):
+        if not self._item_type_check(copy, other):
             return False
 
-        if not self._containment_check(other):
+        if not self._containment_check(copy):
             return False
 
         return True
@@ -241,35 +246,27 @@ class AnyCollection(Matcher):
         found = [item for item in other if item in self._items]
 
         if self._our_type_supports_ordering() and self._items_are_ordered():
-            if not self._supports_ordering(other):
-                raise ValueError(
-                    f"Cannot compare sorted items to unsorted {other}: "
-                    "use a set of items for un-ordered comparisons"
-                )
-
             return found == list(self._items)
 
         return set(found) == set(self._items)
 
-    def _item_type_check(self, other):
+    def _item_type_check(self, other, original):
         """
         Check to see if all items in the object match a particular pattern
         """
         if not self._item_matcher:
             return True
 
-        if isinstance(other, dict):
-            return all(value == self._item_matcher for value in other.values())
+        if isinstance(original, dict):
+            return all(value == self._item_matcher for value in original.keys())
 
         return all(item == self._item_matcher for item in other)
 
 
-# Current contains behavior is a bit weird for dicts as it checks the
-# values not the keys. Ideally we'd implement our own more customised version
-# which allowed you to specify what you wanted
+class AnyDict(AnyCollection):
+    """A matcher representing any dict"""
 
-# class AnyDict(AnyCollection):
-#    _exact_type = dict
+    _exact_type = dict
 
 
 class AnySet(AnyCollection):

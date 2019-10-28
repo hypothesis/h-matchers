@@ -72,11 +72,15 @@ class TestAnyCollection:
         assert matcher == [0, 1, 2, 3]
         assert matcher != [0, 2, 1, 3]
 
-        # Un-ordered things can't be compared to ordered items
-        with pytest.raises(ValueError):
-            assert matcher != {2: "b", 1: "a", 0: "c"}
-        with pytest.raises(ValueError):
-            assert matcher != {0, 2, 1}
+    def test_it_matches_generators(self):
+        matcher = AnyCollection().containing_exactly([0, 1, 2])
+
+        assert matcher == iter(range(3))
+        assert iter(range(3)) == matcher
+
+        non_matcher = AnyCollection().containing_exactly([2, 1, 0])
+        assert non_matcher != iter(range(3))
+        assert iter(range(3)) != non_matcher
 
     def test_it_tests_containment_in_any_order(self):
         matcher = AnyCollection().containing({1, 2})
@@ -101,10 +105,10 @@ class TestAnyCollection:
         matcher = AnyCollection().comprised_of(Any.string())
 
         assert matcher == ["a", "b"]
-        assert matcher == {1: "a", 2: "b"}
+        assert matcher == {"a": 1, "b": 2}
 
         assert matcher != ["a", "b", 1]
-        assert matcher != {1: "a", 2: "b", 3: None}
+        assert matcher != {"a": 1, "b": 1, 3: None}
 
     def test_items_must_be_lists_or_dicts(self):
         with pytest.raises(ValueError):
