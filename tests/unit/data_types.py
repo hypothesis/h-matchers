@@ -17,7 +17,7 @@ def _function():
     """A dummy function"""
 
 
-PRIVATE_CLASS = _PrivateClass
+PRIVATE_CLASS = _PrivateClass()
 
 
 class DataTypes(enum.Enum):
@@ -67,6 +67,8 @@ class Groups:
         DataTypes.BUILTIN_METHOD,
         DataTypes.FUNCTION,
     }
+
+    CALLABLES = FUNCTIONS | {DataTypes.CLASS}
 
     STRINGS = {DataTypes.STRING, DataTypes.FALSY_STRING}
 
