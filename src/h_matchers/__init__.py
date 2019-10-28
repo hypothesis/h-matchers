@@ -1,6 +1,7 @@
 """Exposes the user facing matchers for importing"""
 
 from h_matchers.code import AnyCallable, AnyFunction, AnyInstanceOf
+from h_matchers.collection import AnyCollection, AnyList, AnySet
 from h_matchers.core import Matcher
 from h_matchers.string import AnyString
 
@@ -16,6 +17,10 @@ class Any(Matcher):
     function = AnyFunction
     callable = AnyCallable
     instance_of = AnyInstanceOf
+
+    iterable = AnyCollection
+    list = AnyList
+    set = AnySet
 
     def __init__(self):
         super().__init__("* anything *", lambda _: True)

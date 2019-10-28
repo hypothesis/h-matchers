@@ -9,10 +9,11 @@ Usage
 from h_matchers import Any
 import re
 
-assert [1, ValueError(), print] == [
+assert [1, ValueError(), print, print] == [
         Any(),
         Any.instance_of(ValueError),
-        Any.function()
+        Any.function(),
+        Any.callable()
     ]
 
 assert ["easy", "string", "matching"] == [
@@ -20,6 +21,26 @@ assert ["easy", "string", "matching"] == [
         Any.string.containing("in"),
         Any.string.matching('^.*CHING!', re.IGNORECASE)
     ]
+
+assert [1, 2, 3] == Any.iterable()
+assert [1, 2, 3] == Any.list()
+assert List(1, 2) == Any.iterable.of_type(List)
+
+assert [1, 2, 3] == Any.list.of_size(3)
+assert [1, 2] == Any.iterable.of_size(at_least=1, at_most=3)
+
+# For order independent checks use sets
+assert {4, 2, 3, 1} == Any.set.containing({1, 2, 3})
+assert [3, 2, 1] == Any.list.containing({1, 2, 3})
+
+# All in one to say only these items in any order
+assert [2, 1, 3] == Any.list.containing_exactly({1, 2, 3})
+
+# For order dependent checks use lists
+assert [3, 2, 1] != Any.list.containing([1, 2, 3])
+
+# Assert each item must match something (can be another matcher)
+assert ["a duck", "a horse"] == Any.list.comprised_of(Any.string.containing("a"))
 ```
 
 Hacking
