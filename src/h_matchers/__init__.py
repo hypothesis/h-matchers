@@ -1,6 +1,6 @@
 """The public interface class for comparing with anything."""
 
-from h_matchers.code import AnyFunction, AnyInstanceOf, AnyCallable
+from h_matchers.code import AnyCallable, AnyFunction, AnyInstanceOf
 from h_matchers.core import Matcher
 from h_matchers.string import AnyString
 
