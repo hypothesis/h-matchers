@@ -1,27 +1,27 @@
-"""Data types for testing the matchers"""
+"""Data types for testing the matchers."""
 import enum
 
 
 class _PrivateClass:
-    """A dummy private class"""
+    """Represents a class."""
 
     @classmethod
     def class_method(cls):
-        """A dummy function"""
+        """Do nothing."""
 
     def instance_method(self):
-        """A dummy function"""
+        """Do nothing."""
 
 
 def _function():
-    """A dummy function"""
+    """Do nothing."""
 
 
 PRIVATE_CLASS = _PrivateClass
 
 
 class DataTypes(enum.Enum):
-    """A collection of example data types to simplify writing unit-tests"""
+    """A collection of example data types to simplify writing unit-tests."""
 
     # The descriptions in the second position are mostly so Enum doesn't
     # equate things together and collapse our set of examples

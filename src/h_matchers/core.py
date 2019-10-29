@@ -1,12 +1,15 @@
+"""The core libraries for matching.
+
+These are not intended to be used directly.
 """
-The core libraries for matching. These are not intended to be used directly.
-"""
+
 # pylint: disable=too-few-public-methods
 
 
 class Matcher:
-    """
-    An abstract class for the matcher testing pattern whereby an object
+    """An abstract matcher for comparing with other objects.
+
+    Implements a base class for use in the testing pattern where an object
     stands in for another and will evaluate to true when compared with the
     other.
     """
