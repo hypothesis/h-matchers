@@ -1,6 +1,4 @@
-"""
-A script for re-applying a cookiecutter template over a project
-"""
+"""A script for re-applying a cookiecutter template over a project."""
 import fnmatch
 import json
 import os
@@ -18,15 +16,14 @@ PARSER.add_argument("-o", "--output-directory")
 
 
 class CookieCutter:
-    """
-    A collection of cookie cutter related functions
-    """
+    """A collection of cookie cutter related functions."""
 
     @classmethod
     def replay(cls, project_dir, config, template=None):
-        """
-        Replay a project based on the config provided. The value in '_template'
-        will be used to decide which template to replay if none is provided.
+        """Replay a project based on the config provided.
+
+        The value in '_template' will be used to decide which template to
+        replay if none is provided.
 
         :param project_dir: The target directory
 
@@ -69,8 +66,8 @@ class CookieCutter:
 
     @classmethod
     def _matches_pattern(cls, filename, skip_patterns):
-        """
-        Check if the filename matches any of the patterns in skip_patterns.
+        """Check if the filename matches any of the patterns in skip_patterns.
+
         These patterns are bash style globs like 'thing/*.txt'
         """
         for pattern in skip_patterns:
@@ -82,9 +79,10 @@ class CookieCutter:
 
     @classmethod
     def _copy_tree(cls, source_dir, target_dir, skip_patterns=None):
-        """
-        Copy a directory over another one optionally skipping files which match
-        the specified glob style patterns like 'thing/*.txt'
+        """Copy a directory over another one.
+
+        Optionally skipping files which match the specified glob style patterns
+        like 'thing/*.txt'
         """
         if not skip_patterns:
             skip_patterns = []
@@ -110,9 +108,10 @@ class CookieCutter:
 
     @classmethod
     def render_template(cls, project_dir, config, template=None):
-        """
-        Create a project based on the config provided. The value in '_template'
-        will be used to decide which template to replay if none is provided.
+        """Create a project based on the config provided.
+
+        The value in '_template' will be used to decide which template to
+        replay if none is provided.
 
         :param project_dir: The target directory
 
