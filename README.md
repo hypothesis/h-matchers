@@ -30,15 +30,16 @@ assert List(1, 2) == Any.iterable.of_type(List)
 assert [1, 2, 3] == Any.list.of_size(3)
 assert [1, 2] == Any.iterable.of_size(at_least=1, at_most=3)
 
-# For order independent checks use sets
-assert {4, 2, 3, 1} == Any.set.containing({1, 2, 3})
-assert [3, 2, 1] == Any.list.containing({1, 2, 3})
+# For order independent checks 
+assert [1, 2, 3, 1] == Any.set.containing([1, 1, 2, 3])  # Respecting count!
+assert [3, 2, 1] == Any.list.containing[[1, 2, 3])
+assert {'a': 1} == Any.dict.containing(['a'])
 
-# All in one to say only these items in any order
-assert [2, 1, 3] == Any.list.only_containing({1, 2, 3})
+# All in one to say only these items
+assert [2, 1, 3] == Any.list.containing({1, 2, 3}).only()
 
-# For order dependent checks use lists
-assert [3, 2, 1] != Any.list.containing([1, 2, 3])
+# For order dependent checks add `in_order()`
+assert [3, 2, 1] != Any.list.containing([1, 2, 3]).in_order()
 
 # Assert each item must match something (can be another matcher)
 assert ["a duck", "a horse"] == Any.list.comprised_of(Any.string.containing("a"))

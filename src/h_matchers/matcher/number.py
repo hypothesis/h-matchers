@@ -2,7 +2,7 @@
 
 # pylint: disable=too-few-public-methods
 
-from h_matchers.core import Matcher
+from h_matchers.matcher.core import Matcher
 
 
 class AnyInt(Matcher):

@@ -6,7 +6,7 @@ classes etc.
 
 from inspect import isclass
 
-from h_matchers.core import Matcher
+from h_matchers.matcher.core import Matcher
 
 __all__ = ["AnyInstanceOf", "AnyFunction"]
 

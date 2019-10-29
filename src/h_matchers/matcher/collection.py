@@ -2,8 +2,9 @@
 A collection of flexible matchers for various collection types in a
 fluent style.
 """
-from h_matchers.core import Matcher
+from h_matchers.matcher.core import Matcher
 from h_matchers.decorator import fluent_entrypoint
+from h_matchers.unhashable_counter import UnhashableCounter
 
 
 class AnyCollection(Matcher):
@@ -17,6 +18,9 @@ class AnyCollection(Matcher):
     _max_size = None
     _items = None
     _item_matcher = None
+    _in_order = False
+    _exact_match = False
+    _item_counts = None
 
     def __init__(self):
         # Pass None as our function, as we will be in charge of our own type
@@ -24,6 +28,8 @@ class AnyCollection(Matcher):
         super().__init__("dummy", None)
 
     def __str__(self):
+        # This is some pretty gross code, but it makes test output so much
+        # more readable
         parts = ["any"]
         if self._exact_type:
             parts.append(self._exact_type.__name__)
@@ -43,8 +49,13 @@ class AnyCollection(Matcher):
                 parts.append(f"with length < {self._max_size}")
 
         if self._items:
-            parts.append(f"containing {self._items}")
-            if self._items_are_ordered():
+            parts.append("containing")
+            if self._exact_match:
+                parts.append("only")
+
+            parts.append(f"{self._items}")
+
+            if self._in_order:
                 parts.append("in order")
 
         if self._item_matcher:
@@ -63,7 +74,6 @@ class AnyCollection(Matcher):
         :rtype: AnyCollection
         """
         self._exact_type = of_type
-        self._check_sort_type_agreement()
 
         return self
 
@@ -118,8 +128,10 @@ class AnyCollection(Matcher):
     @fluent_entrypoint
     def containing(self, items):
         """
-        Specify that this item must contain these items. By default this
-        is assumed to be in order. To change this you can call `in_any_order()`
+        Specify that this item must contain these items.
+
+        By default we will attempt to match the items in any order.
+        If you want to change this you can call `in_order()`.
 
         If a list of items is provided then these will be checked in order, if
         the comparison object supports ordering. If a set is provided the items
@@ -128,32 +140,36 @@ class AnyCollection(Matcher):
         Can be called as an instance or class method.
 
         :param items: A set or list of items to check for
-        :return: self - for fluent chaining
         :raises ValueError: If you provide something other than a set or list
+        :return: self - for fluent chaining
         :rtype: AnyCollection
         """
-        if not isinstance(items, (set, list)):
-            raise ValueError("Items must either be a list or set")
 
         self._items = items
-        self._check_sort_type_agreement()
+        self._item_counts = UnhashableCounter(items)
 
         return self
 
-    @fluent_entrypoint
-    def only_containing(self, items):
+    def in_order(self):
         """
-        Specify this item must contain exactly the specified items. The semantics
-        are the same as `containing()` except the lengths must match too.
-
-        Can be called as an instance or class method.
-
-        :param items: A set or list of items to check for
-        :return: self - for fluent chaining
+        Set that matched items can occur in any order
+        :raises ValueError: If no items have been set
         :rtype: AnyCollection
         """
-        self.containing(items)
-        return self.of_size(len(items))
+        if self._items is None:
+            raise ValueError("You must set items before calling this")
+
+        self._in_order = True
+        return self
+
+    def only(self):
+        if self._items is None:
+            raise ValueError("You must set items before calling this")
+
+        self._exact_match = True
+        self.of_size(len(self._items))
+
+        return self
 
     def __eq__(self, other):
         if self._exact_type:
@@ -188,37 +204,45 @@ class AnyCollection(Matcher):
 
         return True
 
-    def _check_sort_type_agreement(self):
-        # We can't conflict if we don't have one side of the equation or other
-        if self._items is None or not self._exact_type:
-            return
-
-        if self._items_are_ordered() and not self._our_type_supports_ordering():
-            raise ValueError(
-                f"Type {self._exact_type} does not sort ordered items. Use a set instead"
-            )
-
-    def _items_are_ordered(self):
-        return isinstance(self._items, list)
-
-    @classmethod
-    def _supports_ordering(cls, item):
-        return hasattr(item, "index")
-
     def _our_type_supports_ordering(self):
-        return self._exact_type is None or self._supports_ordering(self._exact_type)
+        return self._exact_type is None or hasattr(self._exact_type, "index")
 
     def _containment_check(self, other):
         """Run the containment check (if any)"""
         if not self._items:
             return True
 
-        found = [item for item in other if item in self._items]
+        if self._our_type_supports_ordering() and self._in_order:
+            return self._ordered_containment_check(other)
 
-        if self._our_type_supports_ordering() and self._items_are_ordered():
-            return found == list(self._items)
+        return self._unordered_containment_check(other)
 
-        return set(found) == set(self._items)
+    def _unordered_containment_check(self, other):
+        """Check for items in this object out of order"""
+        found_counts = UnhashableCounter(
+            [item for item in other if item in self._items]
+        )
+
+        if self._exact_match:
+            return found_counts == self._item_counts
+
+        return found_counts >= self._item_counts
+
+    def _ordered_containment_check(self, other):
+        """Check for items in this object in order"""
+        last_index = None
+
+        for item in self._items:
+            try:
+                last_index = (
+                    other.index(item)
+                    if last_index is None
+                    else other.index(item, last_index)
+                ) + 1
+            except ValueError:
+                return False
+
+        return True
 
     def _item_type_check(self, other, original):
         """
