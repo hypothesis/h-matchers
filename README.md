@@ -50,7 +50,7 @@ Any.set.of_size(at_most=5)
 Any.set.of_size(at_least=3, at_most=5)
 ```
 
-#### Specifying content
+#### Specifying specific content
 
 You can require an iterable to have a minimum number of items, with repetitions
 , optionally in order:
@@ -75,6 +75,16 @@ as equal:
 
 ```python
 Any.set.containing([{'a': 1}, {'b': 2}])
+```
+
+#### Specifying every item must match something
+
+You can specify that every item in the collection must match a certain item.
+You can also pass matchers to this:
+
+```python
+Any.list.comprised_of(Any.string).of_size(6)
+Any.iterable.comprised_of(True)
 ```
 
 ### Comparing to dicts

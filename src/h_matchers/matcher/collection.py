@@ -122,7 +122,7 @@ class ItemMatcherMixin:
         self._item_matcher = item_type
         return self
 
-    def _check_items_against_matcher(self, other, original):
+    def _check_item_matcher(self, other, original):
         """Check to see if all items in the object match a pattern."""
         if not self._item_matcher:
             return
@@ -133,12 +133,12 @@ class ItemMatcherMixin:
             if not item == self._item_matcher:
                 raise NoMatch("Item does not match item matcher")
 
-    def _describe_matcher(self):
+    def _describe_item_matcher(self):
         if self._item_matcher:
             yield f"of items matching {self._item_matcher}"
 
 
-class ContainmentMixin:
+class ContainsMixin:
     """Check specific items are in the container."""
 
     _items = None
@@ -261,7 +261,7 @@ class ContainmentMixin:
             yield "in order"
 
 
-class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Matcher):
+class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainsMixin, Matcher):
     """
     A versatile matcher for collections with a fluent style that can
     handle a range of different testing duties.
@@ -283,7 +283,7 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
         for checker in [
             self._check_type,
             self._check_size,
-            self._check_items_against_matcher,
+            self._check_item_matcher,
             self._check_contains,
         ]:
             try:
@@ -301,7 +301,7 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
         parts.extend(self._describe_type())
         parts.extend(self._describe_size())
         parts.extend(self._describe_contains())
-        parts.extend(self._describe_matcher())
+        parts.extend(self._describe_item_matcher())
 
         return f'* {" ".join(parts)} *'
 
