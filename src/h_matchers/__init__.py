@@ -1,4 +1,4 @@
-"""Exposes the user facing matchers for importing"""
+"""The public interface class for comparing with anything."""
 
 from h_matchers.code import AnyFunction, AnyInstanceOf
 from h_matchers.core import Matcher
@@ -8,7 +8,7 @@ __all__ = ["Any"]
 
 
 class Any(Matcher):
-    """A class that matches anything"""
+    """Matches anything and provides access to other matchers."""
 
     # pylint: disable=too-few-public-methods
 

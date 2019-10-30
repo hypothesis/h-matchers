@@ -1,4 +1,5 @@
-"""Classes implementing the matcher pattern for comparing to strings"""
+"""Matchers for comparing to strings."""
+
 # pylint: disable=too-few-public-methods
 
 import re
@@ -9,7 +10,7 @@ __all__ = ["AnyString", "AnyStringContaining", "AnyStringMatching"]
 
 
 class AnyStringContaining(Matcher):
-    """A class that matches any string with a certain substring"""
+    """Matches any string with a certain substring."""
 
     def __init__(self, sub_string):
         super().__init__(
@@ -19,10 +20,11 @@ class AnyStringContaining(Matcher):
 
 
 class AnyStringMatching(Matcher):
-    """A class that matches any regular expression"""
+    """Matches any regular expression."""
 
     def __init__(self, pattern, flags=0):
-        """
+        """Create a string matcher with the specified regex.
+
         :param pattern: The raw pattern to compile into a regular expression
         :param flags: Flags `re` e.g. `re.IGNORECASE`
         """
@@ -33,7 +35,7 @@ class AnyStringMatching(Matcher):
 
 
 class AnyString(Matcher):
-    """A class that matches any string"""
+    """Matches any string."""
 
     matching = AnyStringMatching
     containing = AnyStringContaining
