@@ -1,4 +1,4 @@
-"""A script for re-applying a cookiecutter template over a project."""
+"""Re-applies a cookiecutter template over a project."""
 import fnmatch
 import json
 import os

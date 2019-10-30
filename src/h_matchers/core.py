@@ -1,4 +1,4 @@
-"""The core libraries for matching.
+"""The core classes for matching.
 
 These are not intended to be used directly.
 """
@@ -7,7 +7,7 @@ These are not intended to be used directly.
 
 
 class Matcher:
-    """An abstract matcher for comparing with other objects.
+    """Used as the base class for concrete matching classes.
 
     Implements a base class for use in the testing pattern where an object
     stands in for another and will evaluate to true when compared with the

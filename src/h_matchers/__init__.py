@@ -8,7 +8,7 @@ __all__ = ["Any"]
 
 
 class Any(Matcher):
-    """A class that matches anything."""
+    """Matches anything and provides access to other matchers."""
 
     # pylint: disable=too-few-public-methods
 
