@@ -55,6 +55,20 @@ class SizeMixin:
         if self._max_size and len(other) > self._max_size:
             raise NoMatch("Too big")
 
+    def _describe_size(self):
+        if self._min_size is None and self._max_size is None:
+            return
+
+        if self._min_size == self._max_size:
+            yield f"of length {self._min_size}"
+        elif self._min_size is not None and self._max_size is not None:
+            yield f"with length between {self._min_size} and {self._max_size}"
+
+        elif self._min_size is not None:
+            yield f"with length > {self._min_size}"
+        else:
+            yield f"with length < {self._max_size}"
+
 
 class TypeMixin:
     """Apply and check type constraint."""
@@ -78,6 +92,12 @@ class TypeMixin:
         if self._exact_type:
             if not isinstance(original, self._exact_type):
                 raise NoMatch("Wrong type")
+
+    def _describe_type(self):
+        if self._exact_type:
+            yield self._exact_type.__name__
+        else:
+            yield "iterable"
 
 
 class ItemMatcherMixin:
@@ -112,6 +132,10 @@ class ItemMatcherMixin:
         for item in items:
             if not item == self._item_matcher:
                 raise NoMatch("Item does not match item matcher")
+
+    def _describe_matcher(self):
+        if self._item_matcher:
+            yield f"of items matching {self._item_matcher}"
 
 
 class ContainmentMixin:
@@ -171,7 +195,7 @@ class ContainmentMixin:
 
         return self
 
-    def _check_containment(self, other, original=None):
+    def _check_contains(self, other, original=None):
         if not self._items:
             return
 
@@ -183,9 +207,9 @@ class ContainmentMixin:
         if isinstance(self._items, dict):
             self._do_map_value_check(original)
         if self._in_order:
-            self._do_ordered_containment_check(other)
+            self._do_ordered_contains_check(other)
         else:
-            self._do_unordered_containment_check(other)
+            self._do_unordered_contains_check(other)
 
     def _do_map_value_check(self, original):
         for key, value in self._items.items():
@@ -195,12 +219,7 @@ class ContainmentMixin:
             if original[key] != value:
                 raise NoMatch(f"Value for key {key} does not match")
 
-        if self._exact_match:
-            for key in original.keys():
-                if key not in self._items:
-                    raise NoMatch(f"Found unexpected key: {key}")
-
-    def _do_unordered_containment_check(self, other):
+    def _do_unordered_contains_check(self, other):
         """Check for items in this object out of order"""
         found_counts = UnhashableCounter(
             [item for item in other if item in self._items]
@@ -214,7 +233,7 @@ class ContainmentMixin:
         elif not found_counts >= item_counts:
             raise NoMatch("Could not find required item")
 
-    def _do_ordered_containment_check(self, other):
+    def _do_ordered_contains_check(self, other):
         """Check for items in this object in order"""
         last_index = None
 
@@ -227,6 +246,19 @@ class ContainmentMixin:
                 ) + 1
             except ValueError:
                 raise NoMatch(f"Could not find required item: {item}")
+
+    def _describe_contains(self):
+        if not self._items:
+            return
+
+        yield "containing"
+        if self._exact_match:
+            yield "only"
+
+        yield f"{self._items}"
+
+        if self._in_order:
+            yield "in order"
 
 
 class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Matcher):
@@ -252,7 +284,7 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
             self._check_type,
             self._check_size,
             self._check_items_against_matcher,
-            self._check_containment,
+            self._check_contains,
         ]:
             try:
                 checker(copy, original=other)
@@ -265,35 +297,11 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
         # This is some pretty gross code, but it makes test output so much
         # more readable
         parts = ["any"]
-        if self._exact_type:
-            parts.append(self._exact_type.__name__)
-        else:
-            parts.append("iterable")
 
-        if self._min_size is not None or self._max_size is not None:
-            if self._min_size == self._max_size:
-                parts.append(f"of length {self._min_size}")
-            elif self._min_size is not None and self._max_size is not None:
-                parts.append(
-                    f"with length between {self._min_size} and {self._max_size}"
-                )
-            elif self._min_size is not None:
-                parts.append(f"with length > {self._min_size}")
-            else:
-                parts.append(f"with length < {self._max_size}")
-
-        if self._items:
-            parts.append("containing")
-            if self._exact_match:
-                parts.append("only")
-
-            parts.append(f"{self._items}")
-
-            if self._in_order:
-                parts.append("in order")
-
-        if self._item_matcher:
-            parts.append(f"of items matching {self._item_matcher}")
+        parts.extend(self._describe_type())
+        parts.extend(self._describe_size())
+        parts.extend(self._describe_contains())
+        parts.extend(self._describe_matcher())
 
         return f'* {" ".join(parts)} *'
 

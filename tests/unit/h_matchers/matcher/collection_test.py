@@ -73,6 +73,9 @@ class TestAnyCollection:
         assert matcher == [0, 1, 2, 3]
         assert matcher == [0, 2, 1, 3]
 
+        assert matcher != [1]
+        assert matcher != [1, 1]
+
     def test_it_matches_out_of_order_with_exact_items(self):
         matcher = AnyCollection().containing([1, 1, 2]).only()
 
