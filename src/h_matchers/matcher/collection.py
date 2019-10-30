@@ -48,10 +48,10 @@ class SizeMixin:
     def _check_size(self, other):
         """Run the size check (if any)"""
         if self._min_size and len(other) < self._min_size:
-            raise NoMatch()
+            raise NoMatch("Too small")
 
         if self._max_size and len(other) > self._max_size:
-            raise NoMatch()
+            raise NoMatch("Too big")
 
 
 class TypeMixin:
@@ -73,10 +73,10 @@ class TypeMixin:
     def _check_type(self, other):
         if self._exact_type:
             if not isinstance(other, self._exact_type):
-                raise NoMatch()
+                raise NoMatch("Wrong type")
 
         elif not hasattr(other, "__iter__") and not hasattr(other, "__iter__"):
-            raise NoMatch()
+            raise NoMatch("Not iterable")
 
     def _type_supports_ordering(self):
         return self._exact_type is None or hasattr(self._exact_type, "index")
@@ -111,7 +111,7 @@ class ItemMatcherMixin:
 
         for item in items:
             if not item == self._item_matcher:
-                raise NoMatch()
+                raise NoMatch("Item does not match item matcher")
 
 
 class ContainmentMixin:
@@ -176,7 +176,7 @@ class ContainmentMixin:
         # We can bail out early if we need an exact match and they are
         # different sizes
         if self._exact_match and len(self._items) != len(other):
-            raise NoMatch()
+            raise NoMatch("Items of different size")
 
         if ordered and self._in_order:
             self._check_ordered_containment(other)
@@ -189,12 +189,12 @@ class ContainmentMixin:
             [item for item in other if item in self._items]
         )
 
-        if (
-            self._exact_match and found_counts == self._item_counts
-        ) or found_counts >= self._item_counts:
-            return
+        if self._exact_match:
+            if found_counts != self._item_counts:
+                raise NoMatch("Different item counts found")
 
-        raise NoMatch()
+        elif not found_counts >= self._item_counts:
+            raise NoMatch("Could not find required item")
 
     def _check_ordered_containment(self, other):
         """Check for items in this object in order"""
@@ -208,7 +208,7 @@ class ContainmentMixin:
                     else other.index(item, last_index)
                 ) + 1
             except ValueError:
-                raise NoMatch()
+                raise NoMatch("Could not find required item")
 
 
 class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Matcher):
@@ -260,7 +260,9 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
 
     def __eq__(self, other):
         try:
+            # Type checking only needs the original item
             self._check_type(other)
+
             # Take a copy in-case we were provided a generator. This lets us
             # exhaust it and then measure the size. This will fail for infinite
             # generators etc.
