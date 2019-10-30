@@ -1,4 +1,6 @@
 class UnhashableCounter:
+    """Counts unhashable objects"""
+
     def __init__(self, items):
         self._counts = []
         self._items = []
@@ -34,6 +36,7 @@ class UnhashableCounter:
         return zip(self._items, self._counts)
 
     def __eq__(self, other):
+        """Are all counts equal to the counts in other"""
         for _, our_count, their_count in self.compare(other):
             if our_count != their_count:
                 return False
@@ -41,6 +44,8 @@ class UnhashableCounter:
         return True
 
     def __ge__(self, other):
+        """Are all the counts greater or equal to the counts in other."""
+
         for _, our_count, their_count in self.compare(other):
             if our_count < their_count:
                 return False
