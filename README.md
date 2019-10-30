@@ -22,27 +22,82 @@ assert ["easy", "string", "matching"] == [
         Any.string.containing("in"),
         Any.string.matching('^.*CHING!', re.IGNORECASE)
     ]
+```
 
-assert [1, 2, 3] == Any.iterable()
-assert [1, 2, 3] == Any.list()
-assert List(1, 2) == Any.iterable.of_type(List)
+### Comparing to collections
+You can make basic comparisons to collections as follows:
 
-assert [1, 2, 3] == Any.list.of_size(3)
-assert [1, 2] == Any.iterable.of_size(at_least=1, at_most=3)
+```python
+Any.iterable()
+Any.list()
+Any.set()
+```
 
-# For order independent checks 
-assert [1, 2, 3, 1] == Any.set.containing([1, 1, 2, 3])  # Respecting count!
-assert [3, 2, 1] == Any.list.containing[[1, 2, 3])
-assert {'a': 1} == Any.dict.containing(['a'])
+You can specify a custom class with:
 
-# All in one to say only these items
-assert [2, 1, 3] == Any.list.containing({1, 2, 3}).only()
+```python
+Any.iterable.of_type(MyCustomList)
+```
 
-# For order dependent checks add `in_order()`
-assert [3, 2, 1] != Any.list.containing([1, 2, 3]).in_order()
+#### Specifying size
 
-# Assert each item must match something (can be another matcher)
-assert ["a duck", "a horse"] == Any.list.comprised_of(Any.string.containing("a"))
+You can also chain on to add requirements for the size.
+
+```python
+Any.iterable.of_size(4)
+Any.list.of_size(at_least=3)
+Any.set.of_size(at_most=5)
+Any.set.of_size(at_least=3, at_most=5)
+```
+
+#### Specifying content
+
+You can require an iterable to have a minimum number of items, with repetitions
+, optionally in order:
+
+```python
+Any.iterable.containing([1])
+Any.list.containing([1, 2, 2])
+Any.list.containing([1, 2, 2]).in_order()
+```
+
+This will match if the sequence is found any where in the iterable.
+
+You can also say that there cannot be any extra items in the iterable:
+
+```python
+Any.set.containing({2, 3, 4}).only()
+Any.list.containing([1, 2, 2, 3]).only().in_order()
+```
+
+All of this should work with non-hashable items too as long as the items test
+as equal:
+
+```python
+Any.set.containing([{'a': 1}, {'b': 2}])
+```
+
+### Comparing to dicts
+
+Basic comparisons are available:
+
+```python
+Any.iterable()
+Any.dict()
+```
+
+### Most things for collections go for dicts too
+
+```python
+Any.dict.of_size(at_most=4)
+Any.dict.containing(['key_1', 'key_2']).only()
+```
+
+### You can test for key value pairs
+
+```python
+Any.dict.containing({'a': 5, 'b': 6})
+Any.dict.containing({'a': 5, 'b': 6}).only()
 ```
 
 Hacking

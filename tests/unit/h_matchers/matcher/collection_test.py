@@ -111,7 +111,7 @@ class TestAnyCollection:
         assert matcher != [0, 2, 1, 1, 3]
         assert matcher != [1, 2, 2]
 
-    def test_it_matches_in_order_with_exact_items(self):
+    def test_it_matches_in_order_with_no_extras(self):
         matcher = AnyCollection().containing([1, 1, 2]).only().in_order()
 
         assert matcher == [1, 1, 2]
@@ -128,6 +128,24 @@ class TestAnyCollection:
         assert matcher == iter(range(3))
         assert iter(range(3)) == matcher
         assert iter(range(4)) != matcher
+
+    # Test map support ----------------------------------------------------- #
+
+    def test_it_can_match_values(self):
+        matcher = AnyCollection.containing({"a": 1})
+
+        assert matcher == {"a": 1}
+        assert {"a": 1} == matcher
+        assert matcher == {"a": 1, "b": 2}
+
+        assert {"a": 2} != matcher
+        assert {"b": 2} != matcher
+
+    def test_it_can_match_values_allowing_no_extra(self):
+        matcher = AnyCollection.containing({"a": 1}).only()
+
+        assert matcher == {"a": 1}
+        assert matcher != {"a": 1, "b": 2}
 
     # Constraining to exact items ------------------------------------------ #
 

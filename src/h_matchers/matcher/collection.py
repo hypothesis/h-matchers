@@ -12,6 +12,8 @@ class NoMatch(ValueError):
 
 
 class SizeMixin:
+    """Apply and check size constraints."""
+
     _min_size = None
     _max_size = None
 
@@ -45,7 +47,7 @@ class SizeMixin:
 
         return self
 
-    def _check_size(self, other):
+    def _check_size(self, other, original=None):
         """Run the size check (if any)"""
         if self._min_size and len(other) < self._min_size:
             raise NoMatch("Too small")
@@ -55,6 +57,8 @@ class SizeMixin:
 
 
 class TypeMixin:
+    """Apply and check type constraint."""
+
     _exact_type = None
 
     @fluent_entrypoint
@@ -70,19 +74,15 @@ class TypeMixin:
 
         return self
 
-    def _check_type(self, other):
+    def _check_type(self, _, original):
         if self._exact_type:
-            if not isinstance(other, self._exact_type):
+            if not isinstance(original, self._exact_type):
                 raise NoMatch("Wrong type")
-
-        elif not hasattr(other, "__iter__") and not hasattr(other, "__iter__"):
-            raise NoMatch("Not iterable")
-
-    def _type_supports_ordering(self):
-        return self._exact_type is None or hasattr(self._exact_type, "index")
 
 
 class ItemMatcherMixin:
+    """Check that all items in the object match an example."""
+
     _item_matcher = None
 
     @fluent_entrypoint
@@ -103,7 +103,7 @@ class ItemMatcherMixin:
         return self
 
     def _check_items_against_matcher(self, other, original):
-        """Check to see if all items in the object match a particular pattern."""
+        """Check to see if all items in the object match a pattern."""
         if not self._item_matcher:
             return
 
@@ -115,10 +115,11 @@ class ItemMatcherMixin:
 
 
 class ContainmentMixin:
+    """Check specific items are in the container."""
+
     _items = None
     _in_order = False
     _exact_match = False
-    _item_counts = None
 
     @fluent_entrypoint
     def containing(self, items):
@@ -128,8 +129,10 @@ class ContainmentMixin:
         If you want to change this you can call `in_order()`.
 
         If a list of items is provided then these will be checked in order, if
-        the comparison object supports ordering. If a set is provided the items
-        will be checked in any order.
+        the comparison object supports ordering.
+
+        If a dict of items is provided, then both the keys and values will be
+        checked to see if they match.
 
         Can be called as an instance or class method.
 
@@ -140,7 +143,6 @@ class ContainmentMixin:
         """
 
         self._items = items
-        self._item_counts = UnhashableCounter(items)
 
         return self
 
@@ -169,7 +171,7 @@ class ContainmentMixin:
 
         return self
 
-    def _check_containment(self, other, ordered):
+    def _check_containment(self, other, original=None):
         if not self._items:
             return
 
@@ -178,25 +180,41 @@ class ContainmentMixin:
         if self._exact_match and len(self._items) != len(other):
             raise NoMatch("Items of different size")
 
-        if ordered and self._in_order:
-            self._check_ordered_containment(other)
+        if isinstance(self._items, dict):
+            self._do_map_value_check(original)
+        if self._in_order:
+            self._do_ordered_containment_check(other)
         else:
-            self._check_unordered_containment(other)
+            self._do_unordered_containment_check(other)
 
-    def _check_unordered_containment(self, other):
+    def _do_map_value_check(self, original):
+        for key, value in self._items.items():
+            if key not in original:
+                raise NoMatch(f"Expected key {key} not found")
+
+            if original[key] != value:
+                raise NoMatch(f"Value for key {key} does not match")
+
+        if self._exact_match:
+            for key in original.keys():
+                if key not in self._items:
+                    raise NoMatch(f"Found unexpected key: {key}")
+
+    def _do_unordered_containment_check(self, other):
         """Check for items in this object out of order"""
         found_counts = UnhashableCounter(
             [item for item in other if item in self._items]
         )
+        item_counts = UnhashableCounter(self._items)
 
         if self._exact_match:
-            if found_counts != self._item_counts:
+            if found_counts != item_counts:
                 raise NoMatch("Different item counts found")
 
-        elif not found_counts >= self._item_counts:
+        elif not found_counts >= item_counts:
             raise NoMatch("Could not find required item")
 
-    def _check_ordered_containment(self, other):
+    def _do_ordered_containment_check(self, other):
         """Check for items in this object in order"""
         last_index = None
 
@@ -208,7 +226,7 @@ class ContainmentMixin:
                     else other.index(item, last_index)
                 ) + 1
             except ValueError:
-                raise NoMatch("Could not find required item")
+                raise NoMatch(f"Could not find required item: {item}")
 
 
 class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Matcher):
@@ -221,6 +239,27 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
         # Pass None as our function, as we will be in charge of our own type
         # checking
         super().__init__("dummy", None)
+
+    def __eq__(self, other):
+        try:
+            copy = list(other)
+        except TypeError:
+            # Not iterable
+            return False
+
+        # Execute checks roughly in complexity order
+        for checker in [
+            self._check_type,
+            self._check_size,
+            self._check_items_against_matcher,
+            self._check_containment,
+        ]:
+            try:
+                checker(copy, original=other)
+            except NoMatch:
+                return False
+
+        return True
 
     def __str__(self):
         # This is some pretty gross code, but it makes test output so much
@@ -257,24 +296,6 @@ class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Ma
             parts.append(f"of items matching {self._item_matcher}")
 
         return f'* {" ".join(parts)} *'
-
-    def __eq__(self, other):
-        try:
-            # Type checking only needs the original item
-            self._check_type(other)
-
-            # Take a copy in-case we were provided a generator. This lets us
-            # exhaust it and then measure the size. This will fail for infinite
-            # generators etc.
-            copy = list(other)
-            self._check_size(copy)
-            self._check_items_against_matcher(copy, original=other)
-            self._check_containment(copy, ordered=self._type_supports_ordering())
-
-        except NoMatch:
-            return False
-
-        return True
 
 
 class AnyDict(AnyCollection):
