@@ -17,8 +17,7 @@ class SizeMixin:
 
     @fluent_entrypoint
     def of_size(self, exact=None, at_least=None, at_most=None, strict=True):
-        """
-        Limit the size of the list.
+        """Limit the size of the list.
 
         Can be called as an instance or class method.
 
@@ -60,8 +59,7 @@ class TypeMixin:
 
     @fluent_entrypoint
     def of_type(self, of_type):
-        """
-        Limit the type to a specific type like `list` or `set`.
+        """Limit the type to a specific type like `list` or `set`.
 
         Can be called as an instance or class method.
 
@@ -89,8 +87,8 @@ class ItemMatcherMixin:
 
     @fluent_entrypoint
     def comprised_of(self, item_type):
-        """
-        Specify that every item in the iterable should match a single type.
+        """Specify that every item in the iterable should match a single type.
+
         For example you can specify that the iterable contains only strings, or
         exactly the number '1'.
 
@@ -105,9 +103,7 @@ class ItemMatcherMixin:
         return self
 
     def _check_items_against_matcher(self, other, original):
-        """
-        Check to see if all items in the object match a particular pattern
-        """
+        """Check to see if all items in the object match a particular pattern."""
         if not self._item_matcher:
             return
 
@@ -126,8 +122,7 @@ class ContainmentMixin:
 
     @fluent_entrypoint
     def containing(self, items):
-        """
-        Specify that this item must contain these items.
+        """Specify that this item must contain these items.
 
         By default we will attempt to match the items in any order.
         If you want to change this you can call `in_order()`.
@@ -150,8 +145,8 @@ class ContainmentMixin:
         return self
 
     def in_order(self):
-        """
-        Set that matched items can occur in any order
+        """Set that matched items can occur in any order.
+
         :raises ValueError: If no items have been set
         :rtype: AnyCollection
         """
@@ -161,9 +156,27 @@ class ContainmentMixin:
         self._in_order = True
         return self
 
+    def only(self):
+        """Set that only the provided items should be in the collection.
+
+        :raises ValueError: If not items have been set
+        :return: AnyCollection
+        """
+        if self._items is None:
+            raise ValueError("You must set items before calling this")
+
+        self._exact_match = True
+
+        return self
+
     def _check_containment(self, other, ordered):
         if not self._items:
             return
+
+        # We can bail out early if we need an exact match and they are
+        # different sizes
+        if self._exact_match and len(self._items) != len(other):
+            raise NoMatch()
 
         if ordered and self._in_order:
             self._check_ordered_containment(other)
@@ -176,11 +189,9 @@ class ContainmentMixin:
             [item for item in other if item in self._items]
         )
 
-        if self._exact_match:
-            if found_counts == self._item_counts:
-                return
-
-        if found_counts >= self._item_counts:
+        if (
+            self._exact_match and found_counts == self._item_counts
+        ) or found_counts >= self._item_counts:
             return
 
         raise NoMatch()
@@ -200,7 +211,7 @@ class ContainmentMixin:
                 raise NoMatch()
 
 
-class AnyCollection(Matcher, SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin):
+class AnyCollection(SizeMixin, TypeMixin, ItemMatcherMixin, ContainmentMixin, Matcher):
     """
     A versatile matcher for collections with a fluent style that can
     handle a range of different testing duties.
@@ -246,15 +257,6 @@ class AnyCollection(Matcher, SizeMixin, TypeMixin, ItemMatcherMixin, Containment
             parts.append(f"of items matching {self._item_matcher}")
 
         return f'* {" ".join(parts)} *'
-
-    def only(self):
-        if self._items is None:
-            raise ValueError("You must set items before calling this")
-
-        self._exact_match = True
-        self.of_size(len(self._items))
-
-        return self
 
     def __eq__(self, other):
         try:
