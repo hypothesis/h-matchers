@@ -1,7 +1,7 @@
 import pytest
 from tests.unit.data_types import DataTypes
 
-from h_matchers.code import AnyCallable, AnyFunction, AnyInstanceOf
+from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
 
 
 class TestAnyInstanceOf:

@@ -2,7 +2,7 @@ from unittest.mock import create_autospec, sentinel
 
 import pytest
 
-from h_matchers.core import Matcher
+from h_matchers.matcher.core import Matcher
 
 
 class TestMatcher:
