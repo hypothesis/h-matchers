@@ -1,4 +1,4 @@
-"""A collection of matchers for various number types"""
+"""A collection of matchers for various number types."""
 
 # pylint: disable=too-few-public-methods
 
@@ -6,7 +6,7 @@ from h_matchers.matcher.core import Matcher
 
 
 class AnyInt(Matcher):
-    """A class which will match any integer"""
+    """Matches any integer."""
 
     def __init__(self):
         super().__init__(
