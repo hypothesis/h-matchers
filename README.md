@@ -9,10 +9,12 @@ Usage
 from h_matchers import Any
 import re
 
-assert [1, ValueError(), print] == [
+assert [1, 2, ValueError(), print, print] == [
         Any(),
+        Any.int(),
         Any.instance_of(ValueError),
-        Any.function()
+        Any.function(),
+        Any.callable()
     ]
 
 assert ["easy", "string", "matching"] == [
