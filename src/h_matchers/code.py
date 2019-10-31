@@ -17,7 +17,7 @@ class AnyInstanceOf(Matcher):
 
 
 class AnyCallable(Matcher):
-    """A class that matches any callable at all"""
+    """Matches any callable at all."""
 
     def __init__(self):
         super().__init__("* any callable *", callable)
