@@ -9,9 +9,8 @@ Usage
 from h_matchers import Any
 import re
 
-assert [1, 2, ValueError(), print, print] == [
+assert [1, ValueError(), print, print] == [
         Any(),
-        Any.int(),
         Any.instance_of(ValueError),
         Any.function(),
         Any.callable()
