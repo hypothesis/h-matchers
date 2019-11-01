@@ -13,7 +13,7 @@ class SizeMixin:
     _max_size = None
 
     @fluent_entrypoint
-    def of_size(self, exact=None, at_least=None, at_most=None, strict=True):
+    def of_size(self, exact=None, at_least=None, at_most=None):
         """Limit the size of the list.
 
         Can be called as an instance or class method.
@@ -21,7 +21,6 @@ class SizeMixin:
         :param exact: Specify an exact size
         :param at_least: Specify a minimum size
         :param at_most: Specify a maximum size
-        :param strict: Disallow 'None' for every field
         :raises ValueError: If arguments are missing or incompatible
         :return: self - for fluent chaining
         """
@@ -29,7 +28,7 @@ class SizeMixin:
             self._min_size = exact
             self._max_size = exact
 
-        elif strict and at_least is None and at_most is None:
+        elif at_least is None and at_most is None:
             raise ValueError("At least one option should not be None")
 
         else:

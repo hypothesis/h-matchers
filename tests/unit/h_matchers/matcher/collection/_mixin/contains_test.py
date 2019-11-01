@@ -59,24 +59,6 @@ class TestContainsMixin:
         except AssertionError:
             matcher_class.return_value.__ne__.assert_called_once_with(other)
 
-    @pytest.fixture
-    def AnyMappableWithItems(self, patch):
-        return patch(
-            "h_matchers.matcher.collection._mixin.contains.AnyMappableWithItems"
-        )
-
-    @pytest.fixture
-    def AnyIterableWithItemsInOrder(self, patch):
-        return patch(
-            "h_matchers.matcher.collection._mixin.contains.AnyIterableWithItemsInOrder"
-        )
-
-    @pytest.fixture
-    def AnyIterableWithItems(self, patch):
-        return patch(
-            "h_matchers.matcher.collection._mixin.contains.AnyIterableWithItems"
-        )
-
     # Constraining to exact items ------------------------------------------ #
 
     def test_it_can_match_key_value_with_no_extras(self):
@@ -101,3 +83,21 @@ class TestContainsMixin:
     def test_only_fails_with_no_items(self):
         with pytest.raises(ValueError):
             HostClass().only()
+
+    @pytest.fixture
+    def AnyMappableWithItems(self, patch):
+        return patch(
+            "h_matchers.matcher.collection._mixin.contains.AnyMappableWithItems"
+        )
+
+    @pytest.fixture
+    def AnyIterableWithItemsInOrder(self, patch):
+        return patch(
+            "h_matchers.matcher.collection._mixin.contains.AnyIterableWithItemsInOrder"
+        )
+
+    @pytest.fixture
+    def AnyIterableWithItems(self, patch):
+        return patch(
+            "h_matchers.matcher.collection._mixin.contains.AnyIterableWithItems"
+        )

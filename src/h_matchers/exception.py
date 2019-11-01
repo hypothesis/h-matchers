@@ -1,5 +1,5 @@
 """Exceptions for use in h-matchers."""
 
 
-class NoMatch(ValueError):
+class NoMatch(Exception):
     """The items being compared do not match."""
