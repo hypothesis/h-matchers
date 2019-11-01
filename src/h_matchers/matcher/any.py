@@ -2,6 +2,7 @@
 
 from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
 from h_matchers.matcher.core import Matcher
+from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
 
 __all__ = ["Any"]
@@ -13,6 +14,8 @@ class Any(Matcher):
     # pylint: disable=too-few-public-methods
 
     string = AnyString
+    int = AnyInt
+
     function = AnyFunction
     callable = AnyCallable
     instance_of = AnyInstanceOf
