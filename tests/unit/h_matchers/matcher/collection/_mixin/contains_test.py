@@ -1,3 +1,5 @@
+# pylint: disable=no-value-for-parameter
+
 import pytest
 
 from h_matchers.exception import NoMatch
@@ -8,10 +10,11 @@ class HostClass(ContainsMixin):
     def __eq__(self, other):
         try:
             self._check_contains(list(other), other)
-            return True
 
         except NoMatch:
             return False
+
+        return True
 
 
 class TestContainsMixin:
@@ -25,7 +28,7 @@ class TestContainsMixin:
         items, other = {"a": 1}, {"b": 2}
         matcher = HostClass.containing(items)
 
-        matcher == other
+        assert matcher != other
 
         self.assert_delegated(AnyMappableWithItems, items, other)
 
@@ -35,7 +38,7 @@ class TestContainsMixin:
         items, other = ["a", 1], ["b", 2]
         matcher = HostClass.containing(items).in_order()
 
-        matcher == other
+        assert matcher != other
 
         self.assert_delegated(AnyIterableWithItemsInOrder, items, other)
 
@@ -45,7 +48,7 @@ class TestContainsMixin:
         items, other = ["a", 1], ["b", 2]
         matcher = HostClass.containing(items)
 
-        matcher == other
+        assert matcher != other
 
         self.assert_delegated(AnyIterableWithItems, items, other)
 

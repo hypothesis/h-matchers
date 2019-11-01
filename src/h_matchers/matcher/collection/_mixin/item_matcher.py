@@ -1,5 +1,7 @@
 """A mixin for AnyCollection which adds checking all items with a matcher."""
 
+# pylint: disable=too-few-public-methods
+
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.exception import NoMatch
 
@@ -20,7 +22,6 @@ class ItemMatcherMixin:
 
         :param item_type: The type to match again (can be another matcher)
         :return: self - for fluent chaining
-        :rtype: h_matchers.matcher.collection.AnyCollection
         """
 
         self._item_matcher = item_type

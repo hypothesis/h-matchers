@@ -1,3 +1,5 @@
+# pylint: disable=misplaced-comparison-constant
+
 from h_matchers import Any
 from h_matchers.matcher.collection.containment import (
     AnyIterableWithItems,

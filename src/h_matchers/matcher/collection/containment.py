@@ -1,5 +1,7 @@
 """Matchers for testing collections have specific items."""
 
+# pylint: disable=too-few-public-methods
+
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.core import Matcher
 
@@ -104,9 +106,9 @@ class AnyIterableWithItems(Matcher):
 
         Look through each item and list every position in the `container` that
         they match.
-        :returns: A generator of sets of positions
+        :yields: Sets of positions which match a particular item
         """
-        for pos, item in enumerate(items_to_match):
+        for item in items_to_match:
             constraint_set = set()
             for other_pos, other_item in enumerate(container):
                 if item == other_item:

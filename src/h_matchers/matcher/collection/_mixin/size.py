@@ -1,5 +1,7 @@
 """A mixin for AnyCollection which lets you specify the size."""
 
+# pylint: disable=too-few-public-methods
+
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.exception import NoMatch
 
@@ -22,7 +24,6 @@ class SizeMixin:
         :param strict: Disallow 'None' for every field
         :raises ValueError: If arguments are missing or incompatible
         :return: self - for fluent chaining
-        :rtype: h_matchers.matcher.collection.AnyCollection
         """
         if exact is not None:
             self._min_size = exact

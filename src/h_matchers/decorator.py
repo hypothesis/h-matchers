@@ -24,5 +24,5 @@ class fluent_entrypoint:  # pylint: disable=invalid-name
 
         return self.__call__
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):  # noqa: D102
         return self.function(self.instance, *args, **kwargs)

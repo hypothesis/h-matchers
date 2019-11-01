@@ -1,5 +1,6 @@
 """A mixin for AnyCollection which lets you specify the type."""
 
+# pylint: disable=too-few-public-methods
 
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.exception import NoMatch
@@ -17,7 +18,6 @@ class TypeMixin:
         Can be called as an instance or class method.
 
         :return: self - for fluent chaining
-        :rtype: h_matchers.matcher.collection.AnyCollection
         """
         self._exact_type = of_type
 

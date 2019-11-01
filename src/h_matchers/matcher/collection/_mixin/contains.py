@@ -34,7 +34,6 @@ class ContainsMixin:
         :param items: A set or list of items to check for
         :raises ValueError: If you provide something other than a set or list
         :return: self - for fluent chaining
-        :rtype: h_matchers.matcher.collection.AnyCollection
         """
 
         self._items = items
@@ -45,7 +44,7 @@ class ContainsMixin:
         """Set that matched items can occur in any order.
 
         :raises ValueError: If no items have been set
-        :rtype: h_matchers.matcher.collection.AnyCollection
+        :return: self - for fluent chaining
         """
         if self._items is None:
             raise ValueError("You must set items before calling this")
@@ -57,7 +56,7 @@ class ContainsMixin:
         """Set that only the provided items should be in the collection.
 
         :raises ValueError: If not items have been set
-        :return: AnyCollection
+        :return: self - for fluent chaining
         """
         if self._items is None:
             raise ValueError("You must set items before calling this")
