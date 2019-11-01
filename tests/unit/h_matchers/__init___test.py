@@ -10,6 +10,8 @@ class TestAnything:
         assert Any() == item
         assert item == Any()
 
-    @pytest.mark.parametrize("attribute", ["instance_of", "string", "function"])
+    @pytest.mark.parametrize(
+        "attribute", ["instance_of", "string", "function", "callable"]
+    )
     def test_it_has_expected_attributes(self, attribute):
         assert hasattr(Any, attribute)
