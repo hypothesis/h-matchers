@@ -45,7 +45,11 @@ class AnyIterableWithItemsInOrder(Matcher):
         :param items_to_match: An iterable of items to try and match
         :return: A boolean indicating whether each item can be matched
         """
-        if not hasattr(container, "index"):
+        # Ensure we can work with generators
+        try:
+            container = list(container)
+        except TypeError:
+            # It's not even iterable
             return False
 
         last_index = None
@@ -82,12 +86,13 @@ class AnyIterableWithItems(Matcher):
         """
 
         try:
-            cls._is_solvable(cls._cross_match(container, items_to_match))
-
+            container = list(container)
         except TypeError:
             # Not even an iterable
             return False
 
+        try:
+            cls._is_solvable(cls._cross_match(container, items_to_match))
         except NoMatch:
             return False
 

@@ -1,7 +1,10 @@
+from unittest.mock import Mock, create_autospec
+
 import pytest
 from tests.unit.data_types import DataTypes
 
 from h_matchers import Any
+from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection import AnyCollection
 
 
@@ -24,159 +27,36 @@ class TestAnyCollection:
         assert AnyCollection() != item
         assert item != AnyCollection()
 
-    def test_it_matches_specific_class(self):
-        matcher = AnyCollection().of_type(list)
-
-        assert matcher == []
-        assert [] == matcher
-        assert matcher != set()
-        assert set() != matcher
-
-    # Size matching -------------------------------------------------------- #
-
-    def test_it_matches_exact_size(self):
-        matcher = AnyCollection().of_size(3)
-
-        assert matcher == [1, 2, 3]
-        assert {1, 2, 3} == matcher
-        assert matcher != set()
-        assert matcher != [1, 2]
-
-    def test_it_matches_minimum_size(self):
-        matcher = AnyCollection().of_size(at_least=2)
-
-        assert matcher == [1, 2]
-        assert matcher == [1, 2, 3]
-        assert matcher != [1]
-
-    def test_it_complains_with_incorrect_size(self):
-        with pytest.raises(ValueError):
-            AnyCollection().of_size()
-
-        with pytest.raises(ValueError):
-            AnyCollection().of_size(at_least=100, at_most=1)
-
-    def test_it_matches_maximum_size(self):
-        matcher = AnyCollection().of_size(at_most=2)
-
-        assert matcher == []
-        assert matcher == [1, 2]
-        assert matcher != [1, 2, 3]
-
-    # Any order comparison ------------------------------------------------- #
-
-    def test_it_matches_out_of_order(self):
-        matcher = AnyCollection().containing([1, 2])
-
-        assert matcher == {2: "b", 1: "a", 0: "c"}
-        assert matcher == {0, 2, 1}
-        assert matcher == [0, 1, 2, 3]
-        assert matcher == [0, 2, 1, 3]
-
-        assert matcher != [1]
-        assert matcher != [1, 1]
-
-    def test_it_matches_out_of_order_with_exact_items(self):
-        matcher = AnyCollection().containing([1, 1, 2]).only()
-
-        assert matcher == [2, 1, 1]
-
-        assert matcher != [1, 2, 2]
-        assert matcher != {1, 2}
-        assert matcher != {2: "b", 1: "a"}
-
-    def test_it_can_match_unhashable_in_any_order(self):
-        dict_a = {"a": 1}
-        dict_b = {"b": 2}
-        matcher = AnyCollection().containing([dict_a, dict_b])
-
-        assert [dict_b, dict_a] == matcher
-        assert matcher == [dict_b, dict_a]
-
-    def test_it_matches_generators_in_order(self):
-        matcher = AnyCollection().containing([0, 1, 2]).only().in_order()
-
-        assert matcher == iter(range(3))
-        assert iter(range(3)) == matcher
-
-        non_matcher = AnyCollection().containing([2, 1, 0]).only().in_order()
-        assert non_matcher != iter(range(3))
-        assert iter(range(3)) != non_matcher
-
-    # In order item comparison --------------------------------------------- #
-
-    def test_it_matches_in_order(self):
-        matcher = AnyCollection().containing([1, 1, 2]).in_order()
-
-        # Ordered things do
-        assert matcher == [0, 1, 1, 2, 3]
-        assert matcher == [2, 1, 1, 2, 3]  # It is in here
-        assert matcher != [0, 2, 1, 1, 3]
-        assert matcher != [1, 2, 2]
-
-    def test_it_matches_in_order_with_no_extras(self):
-        matcher = AnyCollection().containing([1, 1, 2]).only().in_order()
-
-        assert matcher == [1, 1, 2]
-        assert matcher != [0, 1, 2, 2]
-        assert matcher != [1, 2, 2]
-
-    def test_it_fails_in_order_with_no_items(self):
-        with pytest.raises(ValueError):
-            AnyCollection().in_order()
-
-    def test_it_matches_generators_out_of_order(self):
-        matcher = AnyCollection().containing([2, 0, 1]).only()
-
-        assert matcher == iter(range(3))
-        assert iter(range(3)) == matcher
-        assert iter(range(4)) != matcher
-
-    # Test map support ----------------------------------------------------- #
-
-    def test_it_can_match_values(self):
-        matcher = AnyCollection.containing({"a": 1})
-
-        assert matcher == {"a": 1}
-        assert {"a": 1} == matcher
-        assert matcher == {"a": 1, "b": 2}
-
-        assert {"a": 2} != matcher
-        assert {"b": 2} != matcher
-
-    def test_it_can_match_values_allowing_no_extra(self):
-        matcher = AnyCollection.containing({"a": 1}).only()
-
-        assert matcher == {"a": 1}
-        assert matcher != {"a": 1, "b": 2}
-
-    # Constraining to exact items ------------------------------------------ #
-
-    def test_it_can_constrain_to_exact_matching(self):
-        matcher = AnyCollection().containing({1, 2}).only()
-
-        assert matcher == {2: "b", 1: "a"}
-        assert matcher == {2, 1}
-        assert matcher == [1, 2]
-
-        assert matcher != {2: "b", 1: "a", 0: "c"}
-        assert {1} != matcher
-        assert matcher != [0, 1, 2, 3]
-
-    def test_only_fails_with_no_items(self):
-        with pytest.raises(ValueError):
-            AnyCollection().only()
-
     # Other ---------------------------------------------------------------- #
 
-    def test_it_can_apply_a_matcher_to_all_elements(self):
-        matcher = AnyCollection().comprised_of(Any.string())
+    def test_it_uses_the_mixins_for_equality_tests(self, TestableAnyCollection):
+        matcher = TestableAnyCollection()
 
-        assert matcher == ["a", "b"]
-        assert matcher == {"a": 1, "b": 2}
+        other = {1, 2}
+        list_other = list(other)
 
-        assert matcher != ["a", "b", 1]
-        assert matcher != {"a": 1, "b": 1, 3: None}
+        assert matcher == other
+
+        matcher._check_type.assert_called_once_with(matcher, list_other, other)
+        matcher._check_size.assert_called_once_with(matcher, list_other, other)
+        matcher._check_item_matcher.assert_called_once_with(matcher, list_other, other)
+        matcher._check_contains.assert_called_once_with(matcher, list_other, other)
+
+    def test_it_respects_the_mixins_raising_NoMatch(self, TestableAnyCollection):
+        matcher = TestableAnyCollection()
+        matcher._check_type = Mock(side_effect=NoMatch())
+
+        assert matcher != []
+
+    @pytest.fixture
+    def TestableAnyCollection(self):
+        class TestableAnyCollection(AnyCollection):
+            _check_type = create_autospec(AnyCollection._check_type)
+            _check_size = create_autospec(AnyCollection._check_size)
+            _check_item_matcher = create_autospec(AnyCollection._check_item_matcher)
+            _check_contains = create_autospec(AnyCollection._check_contains)
+
+        return TestableAnyCollection
 
     @pytest.mark.parametrize(
         "matcher,expected",

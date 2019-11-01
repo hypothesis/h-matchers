@@ -77,13 +77,12 @@ class ContainsMixin:
 
         if isinstance(self._items, dict):
             matcher_class = AnyMappableWithItems
-            other = original
         elif self._in_order:
             matcher_class = AnyIterableWithItemsInOrder
         else:
             matcher_class = AnyIterableWithItems
 
-        if matcher_class(self._items) != other:
+        if matcher_class(self._items) != original:
             raise NoMatch()
 
     def _describe_contains(self):
