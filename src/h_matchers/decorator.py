@@ -1,14 +1,13 @@
-"""
-Decorators for h-matchers
-"""
+"""Decorators for h-matchers."""
 
 
 # Pylint doesn't understand this is a decorator
 class fluent_entrypoint:  # pylint: disable=invalid-name
-    """
-    A decorator allowing a method on a class to act as either an instance
-    method, or a class method (which will first create a blank instance of the
-    class).
+    """Makes a class method act as both a method and a classmethod.
+
+    If the wrapped method is called as a classmethod an instance will first
+    be created and then passed to the object. It is therefore important
+    that you class not accept any arguments for instantiation.
     """
 
     instance = None

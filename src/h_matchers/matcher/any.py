@@ -1,10 +1,10 @@
 """The public interface class for comparing with anything."""
 
 from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
+from h_matchers.matcher.collection import AnyCollection, AnyDict, AnyList, AnySet
 from h_matchers.matcher.core import Matcher
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
-from h_matchers.matcher.collection import AnyCollection, AnyDict, AnySet, AnyList
 
 __all__ = ["Any"]
 
