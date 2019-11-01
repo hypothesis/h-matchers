@@ -1,4 +1,5 @@
 # pylint: disable=misplaced-comparison-constant
+import pytest
 
 from h_matchers import Any
 from h_matchers.matcher.collection.containment import (
@@ -6,13 +7,13 @@ from h_matchers.matcher.collection.containment import (
     AnyIterableWithItemsInOrder,
     AnyMappableWithItems,
 )
+from tests.unit.data_types import DataTypes
 
 
 class TestAnyMappableWithItems:
-    def test_it_fails_gracefully(self):
-        assert None != AnyMappableWithItems([])
-        assert 5 != AnyMappableWithItems([])
-        assert ValueError() != AnyMappableWithItems([])
+    @pytest.mark.parametrize("item,_", DataTypes.parameters())
+    def test_it_fails_gracefully(self, item, _):
+        assert item != AnyMappableWithItems({"a": 1})
 
     def test_it_can_match_values(self):
         matcher = AnyMappableWithItems({"a": 1})
@@ -26,10 +27,9 @@ class TestAnyMappableWithItems:
 
 
 class TestAnyIterableWithItemsInOrder:
-    def test_it_fails_gracefully(self):
-        assert None != AnyIterableWithItemsInOrder([])
-        assert 5 != AnyIterableWithItemsInOrder([])
-        assert ValueError() != AnyIterableWithItemsInOrder([])
+    @pytest.mark.parametrize("item,_", DataTypes.parameters())
+    def test_it_fails_gracefully(self, item, _):
+        assert item != AnyIterableWithItemsInOrder(["a"])
 
     def test_it_matches_in_order(self):
         matcher = AnyIterableWithItemsInOrder([1, 1, 2])
@@ -51,10 +51,9 @@ class TestAnyIterableWithItemsInOrder:
 
 
 class TestAnyIterableWithItems:
-    def test_it_fails_gracefully(self):
-        assert None != AnyIterableWithItems([])
-        assert 5 != AnyIterableWithItems([])
-        assert ValueError() != AnyIterableWithItems([])
+    @pytest.mark.parametrize("item,_", DataTypes.parameters())
+    def test_it_fails_gracefully(self, item, _):
+        assert item != AnyIterableWithItems(["a"])
 
     def test_it_matches_out_of_order(self):
         matcher = AnyIterableWithItems([1, 2])

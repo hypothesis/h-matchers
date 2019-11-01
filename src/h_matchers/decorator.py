@@ -1,6 +1,5 @@
 """Decorators for h-matchers."""
 
-
 # Pylint doesn't understand this is a decorator
 class fluent_entrypoint:  # pylint: disable=invalid-name
     """Makes a class method act as both a method and a classmethod.
@@ -15,14 +14,13 @@ class fluent_entrypoint:  # pylint: disable=invalid-name
     def __init__(self, function):
         self.function = function
 
-    def __get__(self, instance, owner):
+    def __get__(self, obj, _type=None):
         # If we have been called in a classmethod context, create a new
         # instance of the owning object
-        if instance is None:
-            instance = owner()
-        self.instance = instance
+        if obj is None:
+            obj = _type()
 
-        return self.__call__
+        def wrapper(*args, **kwargs):
+            return self.function(obj, *args, **kwargs)
 
-    def __call__(self, *args, **kwargs):  # noqa: D102
-        return self.function(self.instance, *args, **kwargs)
+        return wrapper
