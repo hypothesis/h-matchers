@@ -1,7 +1,8 @@
 """Decorators for h-matchers."""
 
+
 # Pylint doesn't understand this is a decorator
-class fluent_entrypoint:  # pylint: disable=invalid-name
+class fluent_entrypoint:  # pylint: disable=invalid-name,too-few-public-methods
     """Makes a class method act as both a method and a classmethod.
 
     If the wrapped method is called as a classmethod an instance will first
