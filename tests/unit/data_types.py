@@ -47,6 +47,11 @@ class DataTypes(enum.Enum):
     BUILTIN_METHOD = (print, "built in")  # pragma: no cover
     FUNCTION = (_function, "function")  # pragma: no cover
 
+    LIST = ([], "list")
+    SET = (set(), "set")
+    TUPLE = ((), "tuple")
+    DICT = (dict(), "dict")
+
     CLASS = (_PrivateClass, "class")  # pragma: no cover
     CLASS_INSTANCE = (PRIVATE_CLASS, "class instance")  # pragma: no cover
     PACKAGE = (enum, "package")  # pragma: no cover
@@ -73,6 +78,13 @@ class Groups:
     STRINGS = {DataTypes.STRING, DataTypes.FALSY_STRING}
 
     INTS = {DataTypes.INT, DataTypes.FALSY_INT}
+
+    ITERABLES = STRINGS | {
+        DataTypes.LIST,
+        DataTypes.SET,
+        DataTypes.TUPLE,
+        DataTypes.DICT,
+    }
 
 
 DataTypes.Groups = Groups

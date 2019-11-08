@@ -1,6 +1,7 @@
 """The public interface class for comparing with anything."""
 
 from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
+from h_matchers.matcher.collection import AnyCollection, AnyDict, AnyList, AnySet
 from h_matchers.matcher.core import Matcher
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
@@ -19,6 +20,11 @@ class Any(Matcher):
     function = AnyFunction
     callable = AnyCallable
     instance_of = AnyInstanceOf
+
+    iterable = AnyCollection
+    list = AnyList
+    set = AnySet
+    dict = AnyDict
 
     def __init__(self):
         super().__init__("* anything *", lambda _: True)
