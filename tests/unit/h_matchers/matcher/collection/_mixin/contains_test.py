@@ -24,13 +24,13 @@ class TestContainsMixin:
 
     # Test delegation to matchers ------------------------------------------ #
 
-    def test_it_delegates_to_AnyMappableWithItems_for_dicts(self, AnyMappableWithItems):
+    def test_it_delegates_to_AnyMappingWithItems_for_dicts(self, AnyMappingWithItems):
         items, other = {"a": 1}, {"b": 2}
         matcher = HostClass.containing(items)
 
         assert matcher != other
 
-        self.assert_delegated(AnyMappableWithItems, items, other)
+        self.assert_delegated(AnyMappingWithItems, items, other)
 
     def test_it_delegates_to_AnyIterableWithItemsInOrder_when_in_order(
         self, AnyIterableWithItemsInOrder
@@ -85,9 +85,9 @@ class TestContainsMixin:
             HostClass().only()
 
     @pytest.fixture
-    def AnyMappableWithItems(self, patch):
+    def AnyMappingWithItems(self, patch):
         return patch(
-            "h_matchers.matcher.collection._mixin.contains.AnyMappableWithItems"
+            "h_matchers.matcher.collection._mixin.contains.AnyMappingWithItems"
         )
 
     @pytest.fixture

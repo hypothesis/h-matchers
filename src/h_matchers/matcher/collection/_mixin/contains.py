@@ -5,7 +5,7 @@ from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection.containment import (
     AnyIterableWithItems,
     AnyIterableWithItemsInOrder,
-    AnyMappableWithItems,
+    AnyMappingWithItems,
 )
 
 
@@ -74,8 +74,8 @@ class ContainsMixin:
         if self._exact_match and len(self._items) != len(other):
             raise NoMatch("Items of different size")
 
-        if isinstance(self._items, dict):
-            matcher_class = AnyMappableWithItems
+        if hasattr(self._items, "items"):
+            matcher_class = AnyMappingWithItems
         elif self._in_order:
             matcher_class = AnyIterableWithItemsInOrder
         else:

@@ -21,6 +21,7 @@ class TestAnything:
             "callable",
             "int",
             "iterable",
+            "mapping",
             "list",
             "set",
             "dict",

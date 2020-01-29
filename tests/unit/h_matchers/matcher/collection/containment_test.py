@@ -6,17 +6,24 @@ from h_matchers import Any
 from h_matchers.matcher.collection.containment import (
     AnyIterableWithItems,
     AnyIterableWithItemsInOrder,
-    AnyMappableWithItems,
+    AnyMappingWithItems,
 )
+
+
+class MultiDict(list):
+    """Very bare bones implementation of a multi-dict."""
+
+    def items(self):
+        yield from self
 
 
 class TestAnyMappableWithItems:
     @pytest.mark.parametrize("item,_", DataTypes.parameters())
     def test_it_fails_gracefully(self, item, _):
-        assert item != AnyMappableWithItems({"a": 1})
+        assert item != AnyMappingWithItems({"a": 1})
 
     def test_it_can_match_values(self):
-        matcher = AnyMappableWithItems({"a": 1})
+        matcher = AnyMappingWithItems({"a": 1})
 
         assert matcher == {"a": 1}
         assert {"a": 1} == matcher
@@ -24,6 +31,23 @@ class TestAnyMappableWithItems:
 
         assert {"a": 2} != matcher
         assert {"b": 2} != matcher
+
+    def test_it_can_match_multi_dicts(self):
+        multi_dict = MultiDict((("a", 2), ["a", 1], ("b", 2)))
+
+        assert multi_dict == AnyMappingWithItems({"a": 2})
+        assert multi_dict == AnyMappingWithItems({"a": 1})
+        assert multi_dict == AnyMappingWithItems({"a": 1, "b": 2})
+        assert multi_dict != AnyMappingWithItems({"d": 1})
+
+    def test_it_can_match_with_multi_dicts(self):
+        multi_dict = MultiDict((("a", 2), ["a", 1], ("b", 2)))
+
+        matcher = AnyMappingWithItems(multi_dict)
+
+        assert multi_dict == matcher
+        assert {"a": 1, "b": 2} != matcher
+        assert MultiDict((("a", 2), ["a", 1], ("b", 2), ["c", 3])) == matcher
 
 
 class TestAnyIterableWithItemsInOrder:
