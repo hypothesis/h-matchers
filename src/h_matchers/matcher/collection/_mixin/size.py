@@ -12,7 +12,12 @@ class SizeMixin:
     _min_size = None
     _max_size = None
 
+    @staticmethod
+    def of_size(exact=None, at_least=None, at_most=None):
+        """Confuse pylint so it doesn't complain about fluent-endpoints."""
+
     @fluent_entrypoint
+    # pylint: disable=function-redefined
     def of_size(self, exact=None, at_least=None, at_most=None):
         """Limit the size of the list.
 

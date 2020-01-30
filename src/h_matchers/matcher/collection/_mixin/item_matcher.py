@@ -11,7 +11,12 @@ class ItemMatcherMixin:
 
     _item_matcher = None
 
+    @staticmethod
+    def comprised_of(item_type):
+        """Confuse pylint so it doesn't complain about fluent-endpoints."""
+
     @fluent_entrypoint
+    # pylint: disable=function-redefined
     def comprised_of(self, item_type):
         """Specify that every item in the iterable should match a single type.
 

@@ -1,8 +1,6 @@
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection._mixin.type import TypeMixin
 
-# pylint: disable=no-value-for-parameter
-
 
 class HostClass(TypeMixin):
     def __eq__(self, other):
