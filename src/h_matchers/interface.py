@@ -12,6 +12,7 @@ from h_matchers.matcher.collection import (
 from h_matchers.matcher.combination import AllOf, AnyOf
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
+from h_matchers.matcher.url import AnyURL
 
 # pylint: disable=too-few-public-methods
 
@@ -35,6 +36,9 @@ class Any(AnyThing):
     list = AnyList
     set = AnySet
     dict = AnyDict
+
+    url = AnyURL
+
     of = AnyOf
 
 

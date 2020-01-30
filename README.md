@@ -23,6 +23,9 @@ assert ["easy", "string", "matching"] == [
         Any.string.matching('^.*CHING!', re.IGNORECASE)
     ]
 
+assert "http://www.example.com?a=3&b=2" == Any.url(
+    host='www.example.com', query=Any.mapping.containing({'a': 3}))
+
 assert 5 == Any.of([5, None])
 
 assert "foo bar" == All.of([
@@ -126,6 +129,37 @@ for the same key.
 
 ```python
 Any.mapping.containing(MultiDict(['a', 1], ['a', 2]))
+```
+
+### Comparing to URLs
+
+You can construct matchers directly from URLs:
+
+```python
+Any.url("http://example.com/path?a=b#anchor")
+```
+
+You can also construct URL matchers manually:
+
+```python
+Any.url(host='www.example.com', path='/path')
+Any.url(scheme=Any.string.containing('http'), query={'a': 'b'}, fragment='anchor')
+```
+
+Or mix and match:
+```python
+Any.url("http://example.com/path?a=b#anchor", host=Any())  # Allow any host
+```
+
+#### Matching query parameters
+
+You can specify the query parameters in a number of different ways:
+
+```python
+Any.url(query='a=1&a=2&b=2')
+Any.url(query={'a': '1', 'b': '2'})
+Any.url(query=[('a', '1'), ('a', '2'), ('b', '2')])
+Any.url(query=Any.mapping.containing({'a': '1'}))
 ```
 
 Hacking

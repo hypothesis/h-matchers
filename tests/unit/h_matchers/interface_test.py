@@ -20,6 +20,7 @@ class TestAny:
             "set",
             "dict",
             "of",
+            "url",
         ],
     )
     def test_it_has_expected_attributes(self, attribute):
