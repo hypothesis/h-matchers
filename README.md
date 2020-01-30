@@ -22,6 +22,13 @@ assert ["easy", "string", "matching"] == [
         Any.string.containing("in"),
         Any.string.matching('^.*CHING!', re.IGNORECASE)
     ]
+
+assert 5 == Any.of([5, None])
+
+assert "foo bar" == All.of([
+    AnyString.containing('foo'), 
+    AnyString.containing('bar')
+])
 ```
 
 ### Comparing to collections
