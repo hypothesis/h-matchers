@@ -69,3 +69,13 @@ class AnyList(AnyCollection):
     """A matcher representing any list."""
 
     _exact_type = list
+
+
+class AnyMapping(AnyCollection):
+    """A matcher representing any mapping."""
+
+    def __eq__(self, other):
+        if not hasattr(other, "items"):
+            return False
+
+        return super().__eq__(other)

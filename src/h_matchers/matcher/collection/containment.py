@@ -6,30 +6,6 @@ from h_matchers.exception import NoMatch
 from h_matchers.matcher.core import Matcher
 
 
-class AnyMappableWithItems(Matcher):
-    """Matches any container which contains all specified key value pairs."""
-
-    def __init__(self, key_values):
-        super().__init__(
-            f"* contains {key_values} *",
-            lambda other: self._contains_values(other, key_values),
-        )
-
-    @classmethod
-    def _contains_values(cls, container, key_values):
-        if not hasattr(container, "items"):
-            return False
-
-        for key, value in key_values.items():
-            if key not in container:
-                return False
-
-            if container[key] != value:
-                return False
-
-        return True
-
-
 class AnyIterableWithItemsInOrder(Matcher):
     """Matches any item which contains certain elements in order."""
 
@@ -152,3 +128,49 @@ class AnyIterableWithItems(Matcher):
 
         # Oh... no branches worked out
         raise NoMatch()
+
+
+class AnyMappingWithItems(Matcher):
+    """Matches any mapping contains specified key value pairs."""
+
+    def __init__(self, key_values):
+        super().__init__(
+            f"* contains {key_values} *",
+            lambda other: self._contains_values(other, key_values),
+        )
+
+    @classmethod
+    def _contains_values(cls, container, key_values):
+        # Direct dict comparison is 200-300x faster than the more generic
+        # fallback, which runs a search algorithm. So if we are comparing
+        # to a plain dict, it's much better
+        if isinstance(container, dict):
+            return cls._dict_comparison(container, key_values)
+
+        if hasattr(container, "items"):
+            return cls._mapping_comparison(container, key_values)
+
+        return False
+
+    @classmethod
+    def _dict_comparison(cls, container, key_values):
+        for key, value in key_values.items():
+            if key not in container:
+                return False
+
+            if container[key] != value:
+                return False
+
+        return True
+
+    @classmethod
+    def _mapping_comparison(cls, container, key_values):
+        flat_key_values = cls._normalise_items(key_values)
+        items_to_compare = cls._normalise_items(container)
+
+        return items_to_compare == AnyIterableWithItems(flat_key_values)
+
+    @classmethod
+    def _normalise_items(cls, mapping):
+        """Handle badly behaved items() implementations returning lists."""
+        return tuple((k, v) for k, v in mapping.items())

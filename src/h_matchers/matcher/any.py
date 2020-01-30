@@ -1,7 +1,13 @@
 """The public interface class for comparing with anything."""
 
 from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
-from h_matchers.matcher.collection import AnyCollection, AnyDict, AnyList, AnySet
+from h_matchers.matcher.collection import (
+    AnyCollection,
+    AnyDict,
+    AnyList,
+    AnyMapping,
+    AnySet,
+)
 from h_matchers.matcher.core import Matcher
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
@@ -22,6 +28,7 @@ class Any(Matcher):
     instance_of = AnyInstanceOf
 
     iterable = AnyCollection
+    mapping = AnyMapping
     list = AnyList
     set = AnySet
     dict = AnyDict

@@ -5,7 +5,7 @@ from tests.unit.data_types import DataTypes
 
 from h_matchers import Any
 from h_matchers.exception import NoMatch
-from h_matchers.matcher.collection import AnyCollection
+from h_matchers.matcher.collection import AnyCollection, AnyMapping
 
 
 class TestAnyCollection:
@@ -86,3 +86,14 @@ class TestAnyCollection:
         assert matcher._min_size == 2
         assert matcher._items == [1, 2]
         assert matcher._exact_type == list
+
+
+class TestAnyMapping:
+    def test_any_mapping_requires_items(self):
+        class TestObject(list):
+            def items(self):
+                yield from self  # pragma: no cover
+
+        assert TestObject() == AnyMapping()
+        assert dict() == AnyMapping()
+        assert list() != AnyMapping()

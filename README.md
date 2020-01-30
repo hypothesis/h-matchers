@@ -93,6 +93,7 @@ Basic comparisons are available:
 
 ```python
 Any.iterable()
+Any.mapping()
 Any.dict()
 ```
 
@@ -108,6 +109,16 @@ Any.dict.containing(['key_1', 'key_2']).only()
 ```python
 Any.dict.containing({'a': 5, 'b': 6})
 Any.dict.containing({'a': 5, 'b': 6}).only()
+```
+
+### You can compare against any mappable including multi-value dicts
+
+This is useful for dict-like objects which may have different behavior and
+semantics to regular dicts. For example: objects which support multiple values
+for the same key.
+
+```python
+Any.mapping.containing(MultiDict(['a', 1], ['a', 2]))
 ```
 
 Hacking
