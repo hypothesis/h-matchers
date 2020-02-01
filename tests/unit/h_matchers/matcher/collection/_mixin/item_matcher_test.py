@@ -2,8 +2,6 @@ from h_matchers import Any
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection._mixin.item_matcher import ItemMatcherMixin
 
-# pylint: disable=no-value-for-parameter
-
 
 class HostClass(ItemMatcherMixin):
     def __eq__(self, other):

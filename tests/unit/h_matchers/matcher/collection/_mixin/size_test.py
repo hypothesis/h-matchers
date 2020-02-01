@@ -3,8 +3,6 @@ import pytest
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection._mixin.size import SizeMixin
 
-# pylint: disable=no-value-for-parameter
-
 
 class HostClass(SizeMixin):
     def __eq__(self, other):

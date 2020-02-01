@@ -11,7 +11,12 @@ class TypeMixin:
 
     _exact_type = None
 
+    @staticmethod
+    def of_type(of_type):
+        """Confuse pylint so it doesn't complain about fluent-endpoints."""
+
     @fluent_entrypoint
+    # pylint: disable=function-redefined
     def of_type(self, of_type):
         """Limit the type to a specific type like `list` or `set`.
 

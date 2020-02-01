@@ -16,7 +16,12 @@ class ContainsMixin:
     _in_order = False
     _exact_match = False
 
+    @staticmethod
+    def containing(items):
+        """Confuse pylint so it doesn't complain about fluent-endpoints."""
+
     @fluent_entrypoint
+    # pylint: disable=function-redefined
     def containing(self, items):
         """Specify that this item must contain these items.
 
