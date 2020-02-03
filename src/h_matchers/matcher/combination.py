@@ -11,8 +11,7 @@ class AnyOf(Matcher):
         options = list(options)  # Coerce generators into concrete list
 
         super().__init__(
-            f"* any of {options} *",
-            lambda other: other in options,
+            f"* any of {options} *", lambda other: other in options,
         )
 
 
