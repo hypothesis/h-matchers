@@ -12,7 +12,7 @@ class AnyOf(Matcher):
 
         super().__init__(
             f"* any of {options} *",
-            lambda other: any(other == option for option in options),
+            lambda other: other in options,
         )
 
 
