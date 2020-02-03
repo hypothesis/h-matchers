@@ -1,5 +1,6 @@
-"""The public interface class for comparing with anything."""
+"""The public interface class for comparing with things."""
 
+from h_matchers.matcher.anything import AnyThing
 from h_matchers.matcher.code import AnyCallable, AnyFunction, AnyInstanceOf
 from h_matchers.matcher.collection import (
     AnyCollection,
@@ -8,14 +9,16 @@ from h_matchers.matcher.collection import (
     AnyMapping,
     AnySet,
 )
-from h_matchers.matcher.core import Matcher
+from h_matchers.matcher.combination import AllOf, AnyOf
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.string import AnyString
 
-__all__ = ["Any"]
+# pylint: disable=too-few-public-methods
+
+__all__ = ["Any", "All"]
 
 
-class Any(Matcher):
+class Any(AnyThing):
     """Matches anything and provides access to other matchers."""
 
     # pylint: disable=too-few-public-methods
@@ -32,6 +35,13 @@ class Any(Matcher):
     list = AnyList
     set = AnySet
     dict = AnyDict
+    of = AnyOf
 
-    def __init__(self):
-        super().__init__("* anything *", lambda _: True)
+
+class All(AllOf):
+    """Matches when all items match.
+
+    Mostly a sop to create a consistent interface.
+    """
+
+    of = AllOf
