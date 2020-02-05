@@ -1,5 +1,5 @@
 from h_matchers.matcher.combination import AllOf, AnyOf
-from h_matchers.matcher.string import AnyString
+from h_matchers.matcher.strings import AnyString
 
 # pylint: disable=misplaced-comparison-constant,singleton-comparison
 

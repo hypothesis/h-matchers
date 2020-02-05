@@ -3,7 +3,7 @@ import re
 import pytest
 from tests.unit.data_types import DataTypes
 
-from h_matchers.matcher.string import AnyString, AnyStringContaining, AnyStringMatching
+from h_matchers.matcher.strings import AnyString, AnyStringContaining, AnyStringMatching
 
 
 class TestAnyString:
