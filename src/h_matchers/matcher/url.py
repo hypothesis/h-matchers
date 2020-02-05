@@ -37,7 +37,7 @@ class AnyURL(Matcher):
         query=None,
         fragment=None,
     ):
-        """Create a new URL matcher optionally based on a URL.
+        """Initialize a new URL matcher.
 
         If a base URL is provided then the matcher will be based on that URL
         otherwise a general accepting matcher is generated.
