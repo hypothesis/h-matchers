@@ -92,7 +92,7 @@ class AnyURL(Matcher):
             # scheme and host are case-insensitive
             "scheme": self._lower_if_string(scheme),
             "host": self._lower_if_string(host),
-            # Others are not
+            # `path`, `query` and `fragment` are case-sensitive
             "path": path,
             "fragment": fragment,
         }
