@@ -136,15 +136,13 @@ class AnyURL(Matcher):
             "fragment": url.fragment or None,
         }
 
-    def _set_query(self, query, exact_match=True):
+    def _set_query(self, query):
         if query is not self.APPLY_DEFAULT:
             query = MultiValueQuery.normalise(query)
             if query and not isinstance(query, Matcher):
                 # MultiValueQuery is guaranteed to return something we can
                 # provide to AnyMapping for comparison
-                query = AnyMapping.containing(query)
-                if exact_match:
-                    query = query.only()
+                query = AnyMapping.containing(query).only()
 
         self.parts["query"] = query
 
