@@ -146,7 +146,7 @@ Any.url(host='www.example.com', path='/path')
 Any.url(scheme=Any.string.containing('http'), query={'a': 'b'}, fragment='anchor')
 ```
 
-Or mix and match:
+Or mix and match, here the separate `host=Any()` argument overrides the `example.com` in the URL and allows URLs with any host to match:
 ```python
 Any.url("http://example.com/path?a=b#anchor", host=Any())  # Allow any host
 ```
