@@ -1,7 +1,6 @@
 """The public interface class for comparing with things."""
 
 from h_matchers.matcher.anything import AnyThing
-from h_matchers.matcher.meta import AnyCallable, AnyFunction, AnyInstanceOf
 from h_matchers.matcher.collection import (
     AnyCollection,
     AnyDict,
@@ -10,6 +9,7 @@ from h_matchers.matcher.collection import (
     AnySet,
 )
 from h_matchers.matcher.combination import AllOf, AnyOf
+from h_matchers.matcher.meta import AnyCallable, AnyFunction, AnyInstanceOf
 from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.strings import AnyString
 from h_matchers.matcher.url import AnyURL
