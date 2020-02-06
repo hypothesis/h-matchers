@@ -107,6 +107,35 @@ class AnyURL(Matcher):
 
         super().__init__(f"* any URL matching {self.parts} *", self._matches_url)
 
+    @classmethod
+    def parse_url(cls, url_string):
+        """Parse a URL into a dict for comparison.
+
+        Parses the given URL allowing you to see how AnyURL will understand it.
+        This can be useful when debugging why a particular URL does or does
+        not match.
+
+        :param url_string: URL to parse
+        :raise ValueError: If scheme is mandatory and not provided
+        :return: A normalised string of comparison values
+        """
+        url = urlparse(url_string)
+
+        if not url.scheme and not url.netloc:
+            # Without a scheme `urlparse()` assumes that the hostname is part
+            # of the path, so we have to try and guess what it really was
+
+            host, path = cls._guess_hostname_and_path(url.path)
+            url = url._replace(netloc=host, path=path)
+
+        return {
+            "scheme": url.scheme.lower() if url.scheme else None,
+            "host": url.netloc.lower() if url.netloc else None,
+            "path": url.path or None,
+            "query": MultiValueQuery.normalise(url.query),
+            "fragment": url.fragment or None,
+        }
+
     def _set_query(self, query, exact_match=True):
         if query is not self.APPLY_DEFAULT:
             query = MultiValueQuery.normalise(query)
@@ -136,35 +165,6 @@ class AnyURL(Matcher):
         for key, default_value in defaults.items():
             if values[key] is default_key:
                 values[key] = default_value
-
-    @classmethod
-    def parse_url(cls, url_string):
-        """Parse a URL into a dict for comparison.
-
-        Parses the given URL allowing you to see how AnyURL will understand it.
-        This can be useful when debugging why a particular URL does or does
-        not match.
-
-        :param url_string: URL to parse
-        :raise ValueError: If scheme is mandatory and not provided
-        :return: A normalised string of comparison values
-        """
-        url = urlparse(url_string)
-
-        if not url.scheme and not url.netloc:
-            # Without a scheme `urlparse()` assumes that the hostname is part
-            # of the path, so we have to try and guess what it really was
-
-            host, path = cls._guess_hostname_and_path(url.path)
-            url = url._replace(netloc=host, path=path)
-
-        return {
-            "scheme": url.scheme.lower() if url.scheme else None,
-            "host": url.netloc.lower() if url.netloc else None,
-            "path": url.path or None,
-            "query": MultiValueQuery.normalise(url.query),
-            "fragment": url.fragment or None,
-        }
 
     PORT_PATTERN = re.compile(r".*:\d{2,5}$")
 
@@ -203,12 +203,17 @@ class AnyURL(Matcher):
 
 
 class MultiValueQuery(list):
-    """Normalise and represent URL queries."""
+    """Normalise and represent URL queries.
+
+    This class is for internal use only and should not be used by outside
+    consumers.
+    """
 
     def items(self):
         """Iterate over contained items as if a dict.
 
-        The bare minimum to appear as a mapping.
+        The bare minimum to appear as a mapping so that we can be passed to
+        `AnyMapping.contains()`.
         """
         yield from self
 

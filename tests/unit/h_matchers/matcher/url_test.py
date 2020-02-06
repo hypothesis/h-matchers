@@ -9,6 +9,12 @@ from h_matchers.matcher.url import AnyURL, MultiValueQuery
 
 
 class TestAnyUrl:
+    def test_base_case(self):
+        matcher = AnyURL()
+
+        assert "" == matcher
+        assert None != matcher
+
     BASE_URL = "http://www.example.com/path?a=1&b=2#fragment"
 
     # URLs where the specified part is different from BASE_URL
@@ -20,48 +26,59 @@ class TestAnyUrl:
         "fragment": "http://www.example.com/path?a=1&b=2#MODIFIED",
     }
 
-    # URLs where the specified part is missing from BASE_URL
-    PART_MISSING_URLS = {
-        "scheme": "www.example.com/path?a=1&b=2#fragment",
-        "host": "http:///path?a=1&b=2#fragment",
-        "path": "http://www.example.com?a=1&b=2#fragment",
-        "query": "http://www.example.com/path#fragment",
-        "fragment": "http://www.example.com/path?a=1&b=2",
-    }
-
-    def test_base_case(self):
-        matcher = AnyURL()
-
-        assert "" == matcher
-        assert None != matcher
-
-    @pytest.mark.parametrize("part,matching_url", tuple(PART_MODIFIED_URLS.items()))
-    def test_you_can_override_base_matching_with_params(self, part, matching_url):
+    @pytest.mark.parametrize(
+        "part,url_with_part_changed", tuple(PART_MODIFIED_URLS.items())
+    )
+    def test_you_can_make_one_part_wild_with_a_base_url(
+        self, part, url_with_part_changed
+    ):
+        # Create a matcher with the specified part wild i.e. `scheme=Any()`
         matcher = AnyURL(self.BASE_URL, **{part: Any()})
 
+        # Check it matches the original URL and the URL with that part changed
         assert self.BASE_URL == matcher
-        assert matching_url == matcher
+        assert url_with_part_changed == matcher
 
-        # Check we don't accidentally match a URL where another part is
-        # different
+    @pytest.mark.parametrize(
+        "part,url_with_part_changed", tuple(PART_MODIFIED_URLS.items())
+    )
+    def test_a_wild_part_does_not_just_match_everything(
+        self, part, url_with_part_changed
+    ):
+        # Create a matcher with the specified part wild i.e. `scheme=Any()`
+        matcher = AnyURL(self.BASE_URL, **{part: Any()})
+
         for modified_part, modified_url in self.PART_MODIFIED_URLS.items():
+            # We expect to match the part where the modified part is the part
+            # we have made wild so skip
             if modified_part == part:
                 continue
 
             assert modified_url != matcher
 
-    @pytest.mark.parametrize("part,matching_url", tuple(PART_MISSING_URLS.items()))
-    def test_you_can_override_default_with_params(self, part, matching_url):
-        # When setting one part to None, that part is definitely set to None
-        # and not left as the default matcher instance
+    @pytest.mark.parametrize(
+        "part,url_with_part_missing",
+        (
+            # URLs where the specified part is missing from BASE_URL
+            ("scheme", "www.example.com/path?a=1&b=2#fragment"),
+            ("host", "http:///path?a=1&b=2#fragment"),
+            ("path", "http://www.example.com?a=1&b=2#fragment"),
+            ("query", "http://www.example.com/path#fragment"),
+            ("fragment", "http://www.example.com/path?a=1&b=2"),
+        ),
+    )
+    def test_you_can_override_default_with_params(self, part, url_with_part_missing):
+        # Create a matcher with the specified part set to None
+        # i.e. `scheme=None`
         matcher = AnyURL(**{part: None})
 
-        # A little whitebox testing never killed anyone
+        # Check that it made it to the internal `parts` dict
         assert matcher.parts[part] is None
 
-        print(AnyURL.parse_url(matching_url))
-        assert matching_url == matcher
-        assert matching_url != self.BASE_URL
+        # Check we match the URL with the part missing
+        assert url_with_part_missing == matcher
+        # ... but not the URL with it present
+        assert self.BASE_URL != matcher
 
     def test_case_sensitivity_for_other(self):
         matcher = AnyURL(self.BASE_URL)

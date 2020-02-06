@@ -151,9 +151,9 @@ Or mix and match, here the separate `host=Any()` argument overrides the `example
 Any.url("http://example.com/path?a=b#anchor", host=Any())  # Allow any host
 ```
 
-#### Matching query parameters
+#### Matching URL queries
 
-You can specify the query parameters in a number of different ways:
+You can specify the query in a number of different ways:
 
 ```python
 Any.url(query='a=1&a=2&b=2')
