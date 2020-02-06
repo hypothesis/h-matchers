@@ -39,12 +39,8 @@ class TestAnyUrl:
         assert self.BASE_URL == matcher
         assert url_with_part_changed == matcher
 
-    @pytest.mark.parametrize(
-        "part,url_with_part_changed", tuple(PART_MODIFIED_URLS.items())
-    )
-    def test_a_wild_part_does_not_just_match_everything(
-        self, part, url_with_part_changed
-    ):
+    @pytest.mark.parametrize("part", ["scheme", "host", "path", "query", "fragment"])
+    def test_a_wild_part_does_not_just_match_everything(self, part):
         # Create a matcher with the specified part wild i.e. `scheme=Any()`
         matcher = AnyURL(self.BASE_URL, **{part: Any()})
 
