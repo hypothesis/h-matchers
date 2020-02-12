@@ -8,7 +8,7 @@ from h_matchers.matcher.url import AnyURL, MultiValueQuery
 # pylint: disable=misplaced-comparison-constant,compare-to-empty-string
 
 
-class TestAnyUrl:
+class TestAnyURL:
     def test_base_case(self):
         matcher = AnyURL()
 
@@ -164,19 +164,56 @@ class TestAnyUrl:
             ).only()
         )
 
+
+class TestAnyURLPathMatching:
+    def test_we_match_full_paths_with_or_without_slashes(self):
+        assert "http://example.com/path" == AnyURL(path="path")
+        assert "http://example.com/path" == AnyURL(path="/path")
+
+    def test_if_you_specify_slash_in_the_path_its_mandatory(self):
+        matcher = AnyURL(path="/path")
+
+        assert "path" != matcher
+        assert "/path" == matcher
+
+    def test_if_you_dont_specify_slash_in_the_path_its_optional(self):
+        matcher = AnyURL(path="path")
+
+        assert "path" == matcher
+        assert "/path" == matcher
+
+    def test_if_you_have_no_scheme_the_path_is_exact(self):
+        matcher = AnyURL(scheme=None, host=None, path="path")
+
+        assert "path" == matcher
+        assert "/path" != matcher
+
+        matcher = AnyURL(scheme=None, host=None, path="/path")
+
+        assert "path" != matcher
+        assert "/path" == matcher
+
+
+class TestAnyURLHostnameGuessing:
     @pytest.mark.parametrize(
         "url,expected_host,expected_path",
         (
-            ("/path", None, "/path"),
+            # A bare path without a leading / is the only time we have no
+            # leading slash
             ("path", None, "path"),
+            ("examplecom/path", None, "examplecom/path"),
+            # All other paths should have one if they exist
+            ("/path", None, "/path"),
+            ("example.com/", "example.com", "/"),
+            ("example.com/path", "example.com", "/path"),
+            ("/example.com/path", None, "/example.com/path"),
+            ("127.0.0.1/path", "127.0.0.1", "/path"),
+            # Indicators of bare hostnames should be respected
             ("localhost", "localhost", None),
             ("localhost:9000", "localhost:9000", None),
             ("example.com", "example.com", None),
-            ("example.com/path", "example.com", "path"),
-            ("/example.com/path", None, "/example.com/path"),
-            ("examplecom/path", None, "examplecom/path"),
-            ("127.0.0.1/path", "127.0.0.1", "path"),
             # A scheme tells us the next part is a host
+            ("http://example.com/", "example.com", "/"),
             ("http://path", "path", None),
             ("http:///path", None, "/path"),
             ("http://?a=b", None, None),
