@@ -69,12 +69,22 @@ from h_matchers.matcher.strings import AnyString, AnyStringMatching
 # pylint: disable=too-few-public-methods,no-value-for-parameter
 
 
-class AnyURL(Matcher):
+class _NamedMatcher(Matcher):
+    """Wrap a matcher with a custom description for nice stringification."""
+
+    def __init__(self, description, matcher):
+        super().__init__(description, matcher.__eq__)
+
+    def __repr__(self):
+        return self._description
+
+
+class AnyURLCore(Matcher):
     """Matches any URL."""
 
     APPLY_DEFAULT = object()
-    STRING_OR_NONE = AnyOf([None, AnyString()])
-    MAP_OR_NONE = AnyOf([None, AnyMapping()])
+    STRING_OR_NONE = _NamedMatcher("<AnyStringOrNone>", AnyOf([None, AnyString()]))
+    MAP_OR_NONE = _NamedMatcher("<AnyMappingOrNone>", AnyOf([None, AnyMapping()]))
 
     DEFAULTS = {
         "scheme": STRING_OR_NONE,
@@ -123,7 +133,10 @@ class AnyURL(Matcher):
             # Apply default matchers for everything not provided
             self._apply_defaults(self.parts, self.DEFAULTS)
 
-        super().__init__(f"* any URL matching {self.parts} *", self._matches_url)
+        super().__init__("dummy", self._matches_url)
+
+    def __str__(self):
+        return f"* any URL matching {self.parts} *"
 
     @classmethod
     def parse_url(cls, url_string):
@@ -171,13 +184,15 @@ class AnyURL(Matcher):
 
         return AnyStringMatching(f"/?{re.escape(path)}")
 
-    def _set_query(self, query):
+    def _set_query(self, query, exact_match=True):
         if query is not self.APPLY_DEFAULT:
             query = MultiValueQuery.normalise(query)
             if query and not isinstance(query, Matcher):
                 # MultiValueQuery is guaranteed to return something we can
                 # provide to AnyMapping for comparison
-                query = AnyMapping.containing(query).only()
+                query = AnyMapping.containing(query)
+                if exact_match:
+                    query = query.only()
 
         self.parts["query"] = query
 
