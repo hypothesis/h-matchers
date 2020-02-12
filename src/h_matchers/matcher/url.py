@@ -146,7 +146,8 @@ class AnyURL(Matcher):
             "fragment": url.fragment or None,
         }
 
-    def _get_path_matcher(self, path, scheme, host):
+    @staticmethod
+    def _get_path_matcher(path, scheme, host):
         # If we are anything other than a plain string, use it directly
         if not isinstance(path, str):
             return path
