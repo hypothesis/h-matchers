@@ -38,6 +38,24 @@ There are many ways you can specify a URL query to match:
 Any mappable object can be used as the specification including mutli-valued
 dicts like ``webob.multidict.MultiDict``. A string with multiple values for
 the same key can also be used.
+
+# Path matching
+
+Comparing paths is tricky, particularly when comparing to bare paths without
+a scheme or host. The following rules are in place to try and make this easier:
+
+ * If you specify `host=None`, `scheme=None` the path is matched exactly as you give it
+ * In all other cases the path will match with or without a leading slash
+
+For example:
+
+    Any.url(scheme=None, host=None, path="foo") == "/foo"  # False
+    Any.url(scheme=None, host=None, path="/foo") == "foo"  # False
+
+    Any.url(path="/foo") == "http://example.com/foo"       # True
+    Any.url(path="foo") == "http://example.com/foo"        # True
+    Any.url(path="/foo") == "foo"                          # True
+    Any.url(path="foo") == "/foo"                          # True
 """
 import re
 from collections import Counter
@@ -46,7 +64,7 @@ from urllib.parse import parse_qsl, urlparse
 from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.combination import AnyOf
 from h_matchers.matcher.core import Matcher
-from h_matchers.matcher.strings import AnyString
+from h_matchers.matcher.strings import AnyString, AnyStringMatching
 
 # pylint: disable=too-few-public-methods,no-value-for-parameter
 
@@ -93,7 +111,7 @@ class AnyURL(Matcher):
             "scheme": self._lower_if_string(scheme),
             "host": self._lower_if_string(host),
             # `path`, `query` and `fragment` are case-sensitive
-            "path": path,
+            "path": self._get_path_matcher(path, scheme, host),
             "fragment": fragment,
         }
 
@@ -135,6 +153,23 @@ class AnyURL(Matcher):
             "query": MultiValueQuery.normalise(url.query),
             "fragment": url.fragment or None,
         }
+
+    @staticmethod
+    def _get_path_matcher(path, scheme, host):
+        # If we are anything other than a plain string, use it directly
+        if not isinstance(path, str):
+            return path
+
+        # If we are matching paths alone, just return whatever we were given
+        # so we match exactly. This lets the user distinguish between /path
+        # and path which may be important
+        if scheme is None and host is None:
+            return path
+
+        # Otherwise construct a matcher which doesn't care about leading
+        # slashes
+
+        return AnyStringMatching(f"/?{re.escape(path)}")
 
     def _set_query(self, query):
         if query is not self.APPLY_DEFAULT:
@@ -184,7 +219,7 @@ class AnyURL(Matcher):
         if "/" in path:
             head, tail = path.split("/", 1)
             if cls._is_hostname(head):
-                return head, tail
+                return head, f"/{tail}"
 
         elif cls._is_hostname(path):
             return path, None
