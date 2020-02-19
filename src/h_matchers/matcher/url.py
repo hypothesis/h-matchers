@@ -44,10 +44,18 @@ the same key can also be used.
 Comparing paths is tricky, particularly when comparing to bare paths without
 a scheme or host. The following rules are in place to try and make this easier:
 
- * If you specify a path with a leading slash, the slash is mandatory
- * If you specify host=None, scheme=None the path is matched exactly as you give it
+ * If you specify `host=None`, `scheme=None` the path is matched exactly as you give it
  * In all other cases the path will match with or without a leading slash
 
+For example:
+
+    Any.url(scheme=None, host=None, path="foo") == "/foo"  # False
+    Any.url(scheme=None, host=None, path="/foo") == "foo"  # False
+
+    Any.url(path="/foo") == "http://example.com/foo"       # True
+    Any.url(path="foo") == "http://example.com/foo"        # True
+    Any.url(path="/foo") == "foo"                          # True
+    Any.url(path="foo") == "/foo"                          # True
 """
 import re
 from collections import Counter
