@@ -2,7 +2,7 @@ import pytest
 
 from h_matchers import Any
 from h_matchers.matcher.collection import AnyMapping
-from h_matchers.matcher.url import AnyURL, MultiValueQuery
+from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery
 
 # We do lots of goofy comparisons on purpose
 # pylint: disable=misplaced-comparison-constant,compare-to-empty-string
@@ -10,7 +10,7 @@ from h_matchers.matcher.url import AnyURL, MultiValueQuery
 
 class TestAnyURL:
     def test_base_case(self):
-        matcher = AnyURL()
+        matcher = AnyURLCore()
 
         assert "" == matcher
         assert None != matcher
@@ -33,7 +33,7 @@ class TestAnyURL:
         self, part, url_with_part_changed
     ):
         # Create a matcher with the specified part wild i.e. `scheme=Any()`
-        matcher = AnyURL(self.BASE_URL, **{part: Any()})
+        matcher = AnyURLCore(self.BASE_URL, **{part: Any()})
 
         # Check it matches the original URL and the URL with that part changed
         assert self.BASE_URL == matcher
@@ -42,7 +42,7 @@ class TestAnyURL:
     @pytest.mark.parametrize("part", ["scheme", "host", "path", "query", "fragment"])
     def test_a_wild_part_does_not_just_match_everything(self, part):
         # Create a matcher with the specified part wild i.e. `scheme=Any()`
-        matcher = AnyURL(self.BASE_URL, **{part: Any()})
+        matcher = AnyURLCore(self.BASE_URL, **{part: Any()})
 
         for modified_part, modified_url in self.PART_MODIFIED_URLS.items():
             # We expect to match the part where the modified part is the part
@@ -66,7 +66,7 @@ class TestAnyURL:
     def test_you_can_override_default_with_params(self, part, url_with_part_missing):
         # Create a matcher with the specified part set to None
         # i.e. `scheme=None`
-        matcher = AnyURL(**{part: None})
+        matcher = AnyURLCore(**{part: None})
 
         # Check that it made it to the internal `parts` dict
         assert matcher.parts[part] is None
@@ -77,7 +77,7 @@ class TestAnyURL:
         assert self.BASE_URL != matcher
 
     def test_case_sensitivity_for_other(self):
-        matcher = AnyURL(self.BASE_URL)
+        matcher = AnyURLCore(self.BASE_URL)
 
         # https://tools.ietf.org/html/rfc7230#section-2.7.3
         # scheme and host are case-insensitive
@@ -92,9 +92,9 @@ class TestAnyURL:
     @pytest.mark.parametrize(
         "matcher",
         (
-            AnyURL(BASE_URL.upper()),
-            AnyURL(BASE_URL.upper(), scheme="HTTP"),
-            AnyURL(BASE_URL.upper(), host="WWW.EXAMPLE.COM"),
+            AnyURLCore(BASE_URL.upper()),
+            AnyURLCore(BASE_URL.upper(), scheme="HTTP"),
+            AnyURLCore(BASE_URL.upper(), host="WWW.EXAMPLE.COM"),
         ),
     )
     def test_case_sensitivity_for_self(self, matcher):
@@ -119,7 +119,7 @@ class TestAnyURL:
         ),
     )
     def test_generic_matching(self, part, value):
-        matcher = AnyURL(**{part: value})
+        matcher = AnyURLCore(**{part: value})
 
         for comparison_part, url in self.PART_MODIFIED_URLS.items():
             if comparison_part == part:
@@ -140,7 +140,7 @@ class TestAnyURL:
         ),
     )
     def test_specifying_query_string(self, query, _):
-        matcher = AnyURL(query=query)
+        matcher = AnyURLCore(query=query)
 
         assert matcher == "http://example.com?b=2&a=1"
 
@@ -151,44 +151,55 @@ class TestAnyURL:
     def test_multi_query_params(self):
         url = "http://example.com?a=1&a=1&a=2"
 
-        assert url != AnyURL(query={"a": "1"})
-        assert url != AnyURL(query=Any.dict.containing({"a": "1"}))
-        assert url == AnyURL(query=Any.mapping.containing({"a": "1"}))
+        assert url != AnyURLCore(query={"a": "1"})
+        assert url != AnyURLCore(query=Any.dict.containing({"a": "1"}))
+        assert url == AnyURLCore(query=Any.mapping.containing({"a": "1"}))
 
-        assert url == AnyURL(
+        assert url == AnyURLCore(
             query=Any.mapping.containing([("a", "1"), ("a", "2"), ("a", "1")]).only()
         )
-        assert url != AnyURL(
+        assert url != AnyURLCore(
             query=Any.mapping.containing(
                 [("a", "1"), ("a", "2"), ("a", "1"), ("b", 5)]
             ).only()
         )
 
+    def test_stringification_changes_when_contents_change(self):
+        matcher = AnyURLCore(scheme="foo")
+
+        assert "foo" in repr(matcher)
+        assert "foo" in str(matcher)
+
+        matcher.parts["scheme"] = "boo"
+
+        assert "boo" in repr(matcher)
+        assert "boo" in str(matcher)
+
 
 class TestAnyURLPathMatching:
     def test_we_match_full_paths_with_or_without_slashes(self):
-        assert "http://example.com/path" == AnyURL(path="path")
-        assert "http://example.com/path" == AnyURL(path="/path")
+        assert "http://example.com/path" == AnyURLCore(path="path")
+        assert "http://example.com/path" == AnyURLCore(path="/path")
 
     def test_if_you_specify_slash_in_the_path_its_mandatory(self):
-        matcher = AnyURL(path="/path")
+        matcher = AnyURLCore(path="/path")
 
         assert "path" != matcher
         assert "/path" == matcher
 
     def test_if_you_dont_specify_slash_in_the_path_its_optional(self):
-        matcher = AnyURL(path="path")
+        matcher = AnyURLCore(path="path")
 
         assert "path" == matcher
         assert "/path" == matcher
 
     def test_if_you_have_no_scheme_the_path_is_exact(self):
-        matcher = AnyURL(scheme=None, host=None, path="path")
+        matcher = AnyURLCore(scheme=None, host=None, path="path")
 
         assert "path" == matcher
         assert "/path" != matcher
 
-        matcher = AnyURL(scheme=None, host=None, path="/path")
+        matcher = AnyURLCore(scheme=None, host=None, path="/path")
 
         assert "path" != matcher
         assert "/path" == matcher
@@ -220,7 +231,7 @@ class TestAnyURLHostnameGuessing:
         ),
     )
     def test_hostname_guessing(self, url, expected_host, expected_path):
-        parsed = AnyURL.parse_url(url)
+        parsed = AnyURLCore.parse_url(url)
         assert (parsed["host"], parsed["path"]) == (expected_host, expected_path)
 
 
