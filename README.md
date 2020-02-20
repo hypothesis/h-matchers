@@ -133,7 +133,7 @@ Any.mapping.containing(MultiDict(['a', 1], ['a', 2]))
 
 ### Comparing to URLs
 
-The URL matcher provides a kwargs and fluent style interface which is a little
+The URL matcher provides a both a kwargs interface and a fluent style interface which is a little
 more verbose but provides more readable results.
 
 You can construct matchers directly from URLs:
