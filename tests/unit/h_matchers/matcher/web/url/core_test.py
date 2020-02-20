@@ -204,6 +204,9 @@ class TestAnyURLPathMatching:
         assert "path" != matcher
         assert "/path" == matcher
 
+    def test_it_does_not_match_prefixes_alone(self):
+        assert AnyURLCore(path="/start") != "http://example.com/start/more"
+
 
 class TestAnyURLHostnameGuessing:
     @pytest.mark.parametrize(

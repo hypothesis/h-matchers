@@ -182,7 +182,7 @@ class AnyURLCore(Matcher):
         # Otherwise construct a matcher which doesn't care about leading
         # slashes
 
-        return AnyStringMatching(f"/?{re.escape(path)}")
+        return AnyStringMatching(f"^/?{re.escape(path)}$")
 
     def _set_query(self, query, exact_match=True):
         if query is not self.APPLY_DEFAULT:
