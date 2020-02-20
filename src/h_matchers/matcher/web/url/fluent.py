@@ -19,7 +19,7 @@ class AnyURL(AnyURLCore):
     }
 
     def _apply_field_default(self, field, value):
-        if value != AnyURLCore.APPLY_DEFAULT:
+        if value is not AnyURLCore.APPLY_DEFAULT:
             return value
 
         return self.PRESENT_DEFAULT[field]

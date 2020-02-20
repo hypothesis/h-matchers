@@ -1,3 +1,6 @@
+import pytest
+
+from h_matchers.matcher.anything import AnyThing
 from h_matchers.matcher.web.url.fluent import AnyURL
 
 # pylint: disable=compare-to-empty-string
@@ -88,6 +91,23 @@ class TestAnyURLFluent:
         assert matcher == "http://example.com#fragment"
         assert matcher != "#different"
         assert matcher != "http://example.com"
+
+    @pytest.mark.parametrize(
+        "method,part",
+        (
+            (AnyURL.with_scheme, "scheme"),
+            (AnyURL.with_host, "host"),
+            (AnyURL.with_path, "path"),
+            (AnyURL.with_query, "query"),
+            (AnyURL.containing_query, "query"),
+            (AnyURL.with_fragment, "fragment"),
+        ),
+    )
+    def test_we_can_set_any_matcher(self, method, part):
+        any_matcher = AnyThing()
+        matcher = method(any_matcher)
+
+        assert matcher.parts[part] is any_matcher
 
     def test_all_methods_together(self):
         base_url = "http://example.com/path?a=b#fragment"
