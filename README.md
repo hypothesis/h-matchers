@@ -156,7 +156,7 @@ Any.url.with_scheme(Any.string.containing('http')).with_query({'a': 'b'}).with_f
 Or mix and match, here the separate `host=Any()` argument overrides the `example.com` in the URL and allows URLs with any host to match:
 ```python
 Any.url("http://example.com/path?a=b#anchor", host=Any())  
-Any.matching("http://example.com/path?a=b#anchor").with_host(Any()) 
+Any.url.matching("http://example.com/path?a=b#anchor").with_host(Any()) 
 ```
 
 #### Matching URL queries
