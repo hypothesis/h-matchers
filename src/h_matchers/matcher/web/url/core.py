@@ -62,21 +62,11 @@ from collections import Counter
 from urllib.parse import parse_qsl, urlparse
 
 from h_matchers.matcher.collection import AnyMapping
-from h_matchers.matcher.combination import AnyOf
+from h_matchers.matcher.combination import AnyOf, NamedMatcher
 from h_matchers.matcher.core import Matcher
 from h_matchers.matcher.strings import AnyString, AnyStringMatching
 
 # pylint: disable=too-few-public-methods,no-value-for-parameter
-
-
-class NamedMatcher(Matcher):
-    """Wrap a matcher with a custom description for nice stringification."""
-
-    def __init__(self, description, matcher):
-        super().__init__(description, matcher.__eq__)
-
-    def __repr__(self):
-        return self._description
 
 
 class AnyURLCore(Matcher):
