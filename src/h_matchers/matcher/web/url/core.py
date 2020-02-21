@@ -69,7 +69,7 @@ from h_matchers.matcher.strings import AnyString, AnyStringMatching
 # pylint: disable=too-few-public-methods,no-value-for-parameter
 
 
-class _NamedMatcher(Matcher):
+class NamedMatcher(Matcher):
     """Wrap a matcher with a custom description for nice stringification."""
 
     def __init__(self, description, matcher):
@@ -83,8 +83,8 @@ class AnyURLCore(Matcher):
     """Matches any URL."""
 
     APPLY_DEFAULT = object()
-    STRING_OR_NONE = _NamedMatcher("<AnyStringOrNone>", AnyOf([None, AnyString()]))
-    MAP_OR_NONE = _NamedMatcher("<AnyMappingOrNone>", AnyOf([None, AnyMapping()]))
+    STRING_OR_NONE = NamedMatcher("<AnyStringOrNone>", AnyOf([None, AnyString()]))
+    MAP_OR_NONE = NamedMatcher("<AnyMappingOrNone>", AnyOf([None, AnyMapping()]))
 
     DEFAULTS = {
         "scheme": STRING_OR_NONE,
@@ -136,7 +136,16 @@ class AnyURLCore(Matcher):
         super().__init__("dummy", self._matches_url)
 
     def __str__(self):
-        return f"* any URL matching {self.parts} *"
+        contraints = {
+            key: value
+            for key, value in self.parts.items()
+            if value is not self.DEFAULTS[key]
+        }
+
+        if not contraints:
+            return "* any URL *"
+
+        return f"* any URL matching {contraints} *"
 
     @classmethod
     def parse_url(cls, url_string):
@@ -182,7 +191,9 @@ class AnyURLCore(Matcher):
         # Otherwise construct a matcher which doesn't care about leading
         # slashes
 
-        return AnyStringMatching(f"^/?{re.escape(path)}$")
+        return NamedMatcher(
+            f"'<Path '{path}'>", AnyStringMatching(f"^/?{re.escape(path)}$")
+        )
 
     def _set_query(self, query, exact_match=True):
         if query is not self.APPLY_DEFAULT:
