@@ -2,7 +2,7 @@ import pytest
 
 from h_matchers import Any
 from h_matchers.matcher.collection import AnyMapping
-from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery
+from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery, NamedMatcher
 
 # We do lots of goofy comparisons on purpose
 # pylint: disable=misplaced-comparison-constant,compare-to-empty-string
@@ -175,6 +175,9 @@ class TestAnyURL:
         assert "boo" in repr(matcher)
         assert "boo" in str(matcher)
 
+    def test_stringification_default(self):
+        assert str(AnyURLCore()) == "* any URL *"
+
 
 class TestAnyURLPathMatching:
     def test_we_match_full_paths_with_or_without_slashes(self):
@@ -243,3 +246,17 @@ class TestMultiValueQuery:
         query = MultiValueQuery(["1234"])
         assert "MultiValueQuery" in repr(query)
         assert "1234" in repr(query)
+
+
+class TestNamedMatcher:
+    def test_it_matches_like_its_contents(self):
+        matcher = NamedMatcher("string", AnyMapping())
+
+        assert matcher == {}
+        assert matcher != []
+
+    def test_it_stringifies_as_we_specify(self):
+        matcher = NamedMatcher("string", AnyMapping())
+
+        assert str(matcher) == "string"
+        assert repr(matcher) == "string"
