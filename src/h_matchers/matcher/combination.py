@@ -25,3 +25,13 @@ class AllOf(Matcher):
             f"* all of {options} *",
             lambda other: all(other == option for option in options),
         )
+
+
+class NamedMatcher(Matcher):
+    """Wrap a matcher with a custom description for nice stringification."""
+
+    def __init__(self, description, matcher):
+        super().__init__(description, matcher.__eq__)
+
+    def __repr__(self):
+        return self._description

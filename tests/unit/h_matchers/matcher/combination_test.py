@@ -1,4 +1,5 @@
-from h_matchers.matcher.combination import AllOf, AnyOf
+from h_matchers.matcher.collection import AnyMapping
+from h_matchers.matcher.combination import AllOf, AnyOf, NamedMatcher
 from h_matchers.matcher.strings import AnyString
 
 # pylint: disable=misplaced-comparison-constant,singleton-comparison
@@ -38,3 +39,17 @@ class TestAllOf:
         assert matcher == 1
         assert matcher == 1
         assert matcher != 10
+
+
+class TestNamedMatcher:
+    def test_it_matches_like_its_contents(self):
+        matcher = NamedMatcher("string", AnyMapping())
+
+        assert matcher == {}
+        assert matcher != []
+
+    def test_it_stringifies_as_we_specify(self):
+        matcher = NamedMatcher("string", AnyMapping())
+
+        assert str(matcher) == "string"
+        assert repr(matcher) == "string"

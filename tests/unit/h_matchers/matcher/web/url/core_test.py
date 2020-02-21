@@ -2,7 +2,7 @@ import pytest
 
 from h_matchers import Any
 from h_matchers.matcher.collection import AnyMapping
-from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery, NamedMatcher
+from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery
 
 # We do lots of goofy comparisons on purpose
 # pylint: disable=misplaced-comparison-constant,compare-to-empty-string
@@ -249,17 +249,3 @@ class TestMultiValueQuery:
         query = MultiValueQuery(["1234"])
         assert "MultiValueQuery" in repr(query)
         assert "1234" in repr(query)
-
-
-class TestNamedMatcher:
-    def test_it_matches_like_its_contents(self):
-        matcher = NamedMatcher("string", AnyMapping())
-
-        assert matcher == {}
-        assert matcher != []
-
-    def test_it_stringifies_as_we_specify(self):
-        matcher = NamedMatcher("string", AnyMapping())
-
-        assert str(matcher) == "string"
-        assert repr(matcher) == "string"
