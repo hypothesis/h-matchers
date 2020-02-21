@@ -227,13 +227,16 @@ class TestAnyURLHostnameGuessing:
             ("127.0.0.1/path", "127.0.0.1", "/path"),
             # Indicators of bare hostnames should be respected
             ("localhost", "localhost", None),
-            ("localhost:9000", "localhost:9000", None),
             ("example.com", "example.com", None),
             # A scheme tells us the next part is a host
             ("http://example.com/", "example.com", "/"),
             ("http://path", "path", None),
             ("http:///path", None, "/path"),
             ("http://?a=b", None, None),
+            # Skip
+            # These get interpreted inconsistently as scheme / path
+            # ("localhost:9000", "localhost:9000", None),
+            # ("localhost:9000/path", "localhost:9000", "/path"),
         ),
     )
     def test_hostname_guessing(self, url, expected_host, expected_path):

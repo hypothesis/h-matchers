@@ -225,15 +225,10 @@ class AnyURLCore(Matcher):
             if values[key] is default_key:
                 values[key] = default_value
 
-    PORT_PATTERN = re.compile(r".*:\d{2,5}$")
-
     @classmethod
     def _is_hostname(cls, host):
         if not host:
             return False
-
-        if cls.PORT_PATTERN.match(host):
-            return True
 
         if "." in host:
             return True
