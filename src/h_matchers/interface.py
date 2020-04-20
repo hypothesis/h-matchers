@@ -9,8 +9,9 @@ from h_matchers.matcher.collection import (
     AnySet,
 )
 from h_matchers.matcher.combination import AllOf, AnyOf
-from h_matchers.matcher.meta import AnyCallable, AnyFunction, AnyInstanceOf
+from h_matchers.matcher.meta import AnyCallable, AnyFunction
 from h_matchers.matcher.number import AnyInt
+from h_matchers.matcher.object import AnyObject
 from h_matchers.matcher.strings import AnyString
 from h_matchers.matcher.web.url import AnyURL
 
@@ -26,10 +27,11 @@ class Any(AnyThing):
 
     string = AnyString
     int = AnyInt
+    object = AnyObject
 
     function = AnyFunction
     callable = AnyCallable
-    instance_of = AnyInstanceOf
+    instance_of = AnyObject.of_type
 
     iterable = AnyCollection
     mapping = AnyMapping
