@@ -131,6 +131,13 @@ for the same key.
 Any.mapping.containing(MultiDict(['a', 1], ['a', 2]))
 ```
 
+### Comparing with simple objects
+
+```python
+Any.object.of_type(User).with_attrs({"username": "name", "id": 4})
+Any.object(User, {"username": "name", "id": 4})
+```
+
 ### Comparing to URLs
 
 The URL matcher provides a both a kwargs interface and a fluent style interface which is a little
