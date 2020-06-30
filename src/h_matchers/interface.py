@@ -31,7 +31,6 @@ class Any(AnyThing):
 
     function = AnyFunction
     callable = AnyCallable
-    instance_of = AnyObject.of_type
 
     iterable = AnyCollection
     mapping = AnyMapping
@@ -42,6 +41,14 @@ class Any(AnyThing):
     url = AnyURL
 
     of = AnyOf
+
+    @staticmethod
+    def instance_of(type_):
+        """Specify that this item must be an instance of the provided type.
+
+        :return: An instance of AnyObject configured with the given type.
+        """
+        return AnyObject.of_type(type_)
 
 
 class All(AllOf):
