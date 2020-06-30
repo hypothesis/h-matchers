@@ -45,6 +45,7 @@ class SizeMixin:
 
         return self
 
+    # pylint: disable=unused-argument
     def _check_size(self, other, original=None):
         """Run the size check (if any)."""
         if self._min_size and len(other) < self._min_size:
