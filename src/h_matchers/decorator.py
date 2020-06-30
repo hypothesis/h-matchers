@@ -10,8 +10,6 @@ class fluent_entrypoint:  # pylint: disable=invalid-name,too-few-public-methods
     that you class not accept any arguments for instantiation.
     """
 
-    instance = None
-
     def __init__(self, function):
         self.function = function
 
