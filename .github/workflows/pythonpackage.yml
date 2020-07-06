@@ -23,7 +23,7 @@ jobs:
       run: |
         pip install black isort
         black --check src tests bin
-        isort --recursive --quiet --check-only .
+        isort --quiet --check-only .
 
     # Dependencies are checked by pylint,
     # so this is as late as we can leave this
