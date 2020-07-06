@@ -1,11 +1,11 @@
 from unittest.mock import Mock, create_autospec
 
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers import Any
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection import AnyCollection, AnyMapping
+from tests.unit.data_types import DataTypes
 
 
 class TestAnyCollection:

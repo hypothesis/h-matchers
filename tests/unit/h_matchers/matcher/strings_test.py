@@ -1,9 +1,9 @@
 import re
 
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers.matcher.strings import AnyString, AnyStringContaining, AnyStringMatching
+from tests.unit.data_types import DataTypes
 
 
 class TestAnyString:
