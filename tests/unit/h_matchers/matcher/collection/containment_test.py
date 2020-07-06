@@ -1,6 +1,5 @@
 # pylint: disable=misplaced-comparison-constant
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers import Any
 from h_matchers.matcher.collection.containment import (
@@ -8,6 +7,7 @@ from h_matchers.matcher.collection.containment import (
     AnyIterableWithItemsInOrder,
     AnyMappingWithItems,
 )
+from tests.unit.data_types import DataTypes
 
 
 class MultiDict(list):

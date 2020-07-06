@@ -1,7 +1,7 @@
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers.matcher.anything import AnyThing
+from tests.unit.data_types import DataTypes
 
 
 class TestAnything:

@@ -1,7 +1,7 @@
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers.matcher.number import AnyInt
+from tests.unit.data_types import DataTypes
 
 
 class TestAnyInt:

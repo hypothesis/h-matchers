@@ -1,7 +1,7 @@
 import pytest
-from tests.unit.data_types import DataTypes
 
 from h_matchers.matcher.meta import AnyCallable, AnyFunction
+from tests.unit.data_types import DataTypes
 
 
 class TestAnyFunction:
