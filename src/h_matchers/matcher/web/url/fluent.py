@@ -64,12 +64,9 @@ class AnyURL(AnyURLCore):
         If you pass None this will ensure the URL has no scheme.
 
         :param scheme: None, string or matcher for the scheme
-        :return: self for fluent chaining
         """
 
         self.parts["scheme"] = self._apply_field_default("scheme", scheme)
-
-        return self
 
     @fluent_entrypoint
     def with_host(self, host=AnyURLCore.APPLY_DEFAULT):
@@ -78,11 +75,8 @@ class AnyURL(AnyURLCore):
         If you pass None this will ensure the URL has no host.
 
         :param host: None, string or matcher for the host
-        :return: self for fluent chaining
         """
         self.parts["host"] = self._apply_field_default("host", host)
-
-        return self
 
     @fluent_entrypoint
     def with_path(self, path=AnyURLCore.APPLY_DEFAULT):
@@ -91,7 +85,6 @@ class AnyURL(AnyURLCore):
         If you pass None this will ensure the URL has no path.
 
         :param path: None, string or matcher for the path
-        :return: self for fluent chaining
         """
         if path is AnyURLCore.APPLY_DEFAULT:
             self.parts["path"] = AnyString()
@@ -100,18 +93,13 @@ class AnyURL(AnyURLCore):
                 path, self.parts["scheme"], self.parts["host"]
             )
 
-        return self
-
     @fluent_entrypoint
     def containing_query(self, query):
         """Specify that the query must have at least the items specified.
 
         :param query: A mappable to check
-        :return: self for fluent chaining
         """
         self._set_query(query, exact_match=False)
-
-        return self
 
     @fluent_entrypoint
     def with_query(self, query=AnyURLCore.APPLY_DEFAULT):
@@ -120,12 +108,9 @@ class AnyURL(AnyURLCore):
         If you pass None this will ensure the URL has no query.
 
         :param query: None, mapping or matcher for the query
-        :return: self for fluent chaining
         """
         query = self._apply_field_default("query", query)
         self._set_query(query)
-
-        return self
 
     @fluent_entrypoint
     def with_fragment(self, fragment=AnyURLCore.APPLY_DEFAULT):
@@ -134,8 +119,5 @@ class AnyURL(AnyURLCore):
         If you pass None this will ensure the URL has no fragment.
 
         :param fragment: None, string or matcher for the fragment
-        :return: self for fluent chaining
         """
         self.parts["fragment"] = self._apply_field_default("fragment", fragment)
-
-        return self
