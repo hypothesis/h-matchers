@@ -38,7 +38,6 @@ class ContainsMixin:
 
         :param items: A set or list of items to check for
         :raises ValueError: If you provide something other than a set or list
-        :return: self - for fluent chaining
         """
 
         if isinstance(items, ContainsMixin):
@@ -47,8 +46,6 @@ class ContainsMixin:
             items = items._items
 
         self._items = items
-
-        return self
 
     def in_order(self):
         """Set that matched items can occur in any order.

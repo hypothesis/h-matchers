@@ -8,6 +8,8 @@ class fluent_entrypoint:  # pylint: disable=invalid-name,too-few-public-methods
     If the wrapped method is called as a classmethod an instance will first
     be created and then passed to the object. It is therefore important
     that you class not accept any arguments for instantiation.
+
+    This will automatically return `self` for fluent chaining in your methods.
     """
 
     def __init__(self, function):
@@ -20,6 +22,8 @@ class fluent_entrypoint:  # pylint: disable=invalid-name,too-few-public-methods
             obj = _type()
 
         def wrapper(*args, **kwargs):
-            return self.function(obj, *args, **kwargs)
+            self.function(obj, *args, **kwargs)
+
+            return obj
 
         return wrapper

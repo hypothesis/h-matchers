@@ -26,11 +26,9 @@ class ItemMatcherMixin:
         Can be called as an instance or class method.
 
         :param item_type: The type to match again (can be another matcher)
-        :return: self - for fluent chaining
         """
 
         self._item_matcher = item_type
-        return self
 
     def _check_item_matcher(self, other, original):
         """Check to see if all items in the object match a pattern."""
