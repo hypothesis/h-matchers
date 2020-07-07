@@ -20,6 +20,14 @@ class TestContainsMixin:
         with pytest.raises(ValueError):
             HostClass().in_order()
 
+    def test_it_extracts_items_from_other_ContainsMixin_children(self):
+        doner = HostClass.containing(["a", "b", "c"])
+
+        recipient = HostClass.containing(doner)
+
+        # pylint: disable=protected-access
+        assert recipient._items == doner._items
+
     # Test delegation to matchers ------------------------------------------ #
 
     def test_it_delegates_to_AnyMappingWithItems_for_dicts(self, AnyMappingWithItems):
