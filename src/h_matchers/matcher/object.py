@@ -46,11 +46,8 @@ class AnyObject(Matcher):  # pragma: no cover
         Can be called as an instance or class method.
 
         :param type_: The type this object will match
-        :return: self - for fluent chaining
         """
         self.__type = type_
-
-        return self
 
     @staticmethod
     def with_attrs(attributes):
@@ -69,15 +66,12 @@ class AnyObject(Matcher):  # pragma: no cover
         Can be called as an instance or class method.
 
         :param attributes: A mapping of attributes to values
-        :return: self - for fluent chaining
         :raise ValueError: If the provided attributes do not support `items()`
         """
         if not hasattr(attributes, "items"):
             raise ValueError("The attributes must be a mapping")
 
         self.__attributes = attributes
-
-        return self
 
     def _matches_object(self, other):
         if self.__type is not None and not isinstance(other, self.__type):

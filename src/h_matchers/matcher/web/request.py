@@ -95,11 +95,8 @@ class AnyRequest(Matcher):  # pragma: no cover
         """Specify the request must have at least the headers specified.
 
         :param headers: A mappable of headers to match
-        :return: self for fluent chaining
         """
         self.headers = AnyMapping.containing(headers)
-
-        return self
 
     @fluent_entrypoint
     def with_headers(self, headers=...):
@@ -109,7 +106,6 @@ class AnyRequest(Matcher):  # pragma: no cover
         libraries add it before sending, and it's mostly noise.
 
         :param headers: A mappable of headers or matcher to match exactly
-        :return: self for fluent chaining
         """
         if headers is ...:
             self.headers = AnyMapping.of_size(at_least=1)
@@ -120,14 +116,11 @@ class AnyRequest(Matcher):  # pragma: no cover
         elif headers is not None:
             self.headers = AnyMapping.containing(headers).only()
 
-        return self
-
     @fluent_entrypoint
     def with_method(self, method=...):
         """Specify the request must have a method.
 
         :param method: A string or matcher for the method
-        :return: self for fluent chaining
         """
         if method is ...:
             self.method = AnyString()
@@ -138,14 +131,11 @@ class AnyRequest(Matcher):  # pragma: no cover
         elif method is not None:
             self.method = method
 
-        return self
-
     @fluent_entrypoint
     def with_url(self, url=...):
         """Specify the request must have a URL.
 
         :param url: A string or matcher for the URL
-        :return: self for fluent chaining
         """
         if url is ...:
             self.url = AnyURL()
@@ -155,8 +145,6 @@ class AnyRequest(Matcher):  # pragma: no cover
 
         elif url is not None:
             self.url = url
-
-        return self
 
     def assert_equal_to(self, other):
         """Assert that the request object is equal to another object.

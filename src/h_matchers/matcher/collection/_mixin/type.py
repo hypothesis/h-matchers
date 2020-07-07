@@ -21,12 +21,8 @@ class TypeMixin:
         """Limit the type to a specific type like `list` or `set`.
 
         Can be called as an instance or class method.
-
-        :return: self - for fluent chaining
         """
         self._exact_type = of_type
-
-        return self
 
     def _check_type(self, _, original):
         if self._exact_type:

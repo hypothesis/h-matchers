@@ -27,7 +27,6 @@ class SizeMixin:
         :param at_least: Specify a minimum size
         :param at_most: Specify a maximum size
         :raises ValueError: If arguments are missing or incompatible
-        :return: self - for fluent chaining
         """
         if exact is not None:
             self._min_size = exact
@@ -42,8 +41,6 @@ class SizeMixin:
 
             self._min_size = at_least
             self._max_size = at_most
-
-        return self
 
     # pylint: disable=unused-argument
     def _check_size(self, other, original=None):
