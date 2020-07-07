@@ -168,8 +168,8 @@ class AnyURLCore(Matcher):
 
     @staticmethod
     def _get_path_matcher(path, scheme, host):
-        # If we are anything other than a plain string, use it directly
-        if not isinstance(path, str):
+        # If we are anything other than a plain string or None, use it directly
+        if path is not None and not isinstance(path, str):
             return path
 
         # If we are matching paths alone, just return whatever we were given
@@ -178,9 +178,13 @@ class AnyURLCore(Matcher):
         if scheme is None and host is None:
             return path
 
+        # If we got None, we need to allow ourselves to match either slash, ''
+        # or None
+        if path in (None, "/", ""):
+            return NamedMatcher("<Path '/'>", AnyOf([None, AnyStringMatching(r"^/?$")]))
+
         # Otherwise construct a matcher which doesn't care about leading
         # slashes
-
         return NamedMatcher(
             f"'<Path '{path}'>", AnyStringMatching(f"^/?{re.escape(path)}$")
         )
@@ -199,8 +203,15 @@ class AnyURLCore(Matcher):
 
     def _set_base_url(self, base_url):
         # If we have a base URL, we'll take everything from there if it
-        # wasn't explicitly provided in the contructor
-        self._apply_defaults(self.parts, self.parse_url(base_url))
+        # wasn't explicitly provided in the constructor
+
+        overlay = self.parse_url(base_url)
+
+        path_matcher = self._get_path_matcher(
+            overlay["path"], overlay["scheme"], overlay["host"]
+        )
+        overlay["path"] = path_matcher
+        self._apply_defaults(self.parts, overlay)
 
     @staticmethod
     def _lower_if_string(value):

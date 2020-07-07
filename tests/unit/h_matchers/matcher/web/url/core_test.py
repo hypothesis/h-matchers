@@ -39,6 +39,20 @@ class TestAnyURL:
         assert self.BASE_URL == matcher
         assert url_with_part_changed == matcher
 
+    @pytest.mark.parametrize(
+        "base_url, url",
+        (
+            ("http://example.com", "http://example.com"),
+            ("http://example.com", "http://example.com/"),
+            ("http://example.com/", "http://example.com"),
+            ("http://example.com/", "http://example.com/"),
+        ),
+    )
+    def test_base_url_matches_with_or_without_path(self, base_url, url):
+        matcher = AnyURLCore(base_url=base_url)
+
+        assert matcher == url
+
     @pytest.mark.parametrize("part", ["scheme", "host", "path", "query", "fragment"])
     def test_a_wild_part_does_not_just_match_everything(self, part):
         # Create a matcher with the specified part wild i.e. `scheme=Any()`
@@ -67,9 +81,6 @@ class TestAnyURL:
         # Create a matcher with the specified part set to None
         # i.e. `scheme=None`
         matcher = AnyURLCore(**{part: None})
-
-        # Check that it made it to the internal `parts` dict
-        assert matcher.parts[part] is None
 
         # Check we match the URL with the part missing
         assert url_with_part_missing == matcher
