@@ -158,7 +158,8 @@ class AnyMappingWithItems(Matcher):
             if key not in container:
                 return False
 
-            if container[key] != value:
+            # Do the comparison backwards to give matchers a chance to kick in
+            if value != container[key]:
                 return False
 
         return True

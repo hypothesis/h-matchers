@@ -41,6 +41,11 @@ class ContainsMixin:
         :return: self - for fluent chaining
         """
 
+        if isinstance(items, ContainsMixin):
+            # It's ok, because it's our class
+            # pylint: disable=protected-access
+            items = items._items
+
         self._items = items
 
         return self
