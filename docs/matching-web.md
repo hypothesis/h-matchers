@@ -58,3 +58,72 @@ AnyURL.with_path()
 AnyURL.with_query()
 AnyURL.with_fragment()
 ```
+
+## Matching request objects
+
+The request matcher will match a number of request objects from different
+libraries with a common interface. For details see:
+[h_matchers.matcher.web.request](../src/h_matchers/matcher/web/request.py).
+
+This allows you to make assertions about objects like `requests.Request`:
+
+```python
+Any.request()
+
+Any.request(url="http://example.com")
+Any.request.with_url("http://example.com")
+
+Any.request(method="GET")
+Any.request.with_method("GET")
+
+Any.request(headers={"Content-Type": "application/json"})
+Any.request.with_headers({"Content-Type": "application/json"})
+
+Any.request.containing_headers({"Content-Type": "application/json"})
+```
+
+### Header matching takes exact rows
+
+At the moment even though two sets of headers might be equivalent:
+
+```
+Cache-Control: max-age=0
+Cache-Control: no-cache
+
+# vs.
+
+Cache-Control: max-age=0; no-cache
+```
+
+We currently only match exact row values. No parsing of the header values is
+performed.
+
+### You can use any of these in combination
+
+```python
+Any.request(
+    method="GET",
+    url="http://example.com",
+    headers={
+        "Content-Type": "application/json"
+    }
+)
+
+Any.request("GET", "http://example.com", {
+    "Content-Type": "application/json"
+})
+
+Any.request.with_method("GET").with_url("http://example.com").with_headers({
+    "Content-Type": "application/json"
+})
+```
+
+### All methods accept other matchers as options
+
+```python
+Any.request(
+    method=Any.of(["POST", "PATCH"]),
+    url=Any.url.with_scheme("https"),
+    headers=Any.mapping.of_size(at_least=3)
+)
+```
