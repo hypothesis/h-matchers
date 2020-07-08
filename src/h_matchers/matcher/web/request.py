@@ -40,29 +40,26 @@ except ImportError:  # pragma: no cover
 class AnyRequest(Matcher):  # pragma: no cover
     """Matching object for request type objects.
 
-    For a particular request type to be comparable it must be supported and you
-    must have installed it as a requirement. Requests libraries are not added
-    as dependencies of this package to prevent them from bloating your project.
-
-    If a dependency is not installed we will simply fail to match against it.
-
     Currently supported request objects:
 
+     * `requests.Request`
      * `requests.PreparedRequest`
+     * `pyramid.request.Request`
+     * `pyramid.testing.Request`
     """
+
+    # Use a set here as an optimisation for when many of these items are
+    # instances of `_LibraryNotAvailable`
+    SUPPORTED_TYPES = tuple(
+        {RequestsRequest, RequestsPreparedRequest, PyramidRequest, PyramidDummyRequest}
+    )
 
     # Enable failing on comparison instead of returning False. This can be very
     # useful for debugging as we can fail fast and return a message about why
     # we can't match. We might want to think about making this a more general
     # feature. It would be very handy for the more complex matchers
-    SUPPORTED_TYPES = (
-        RequestsRequest,
-        RequestsPreparedRequest,
-        PyramidRequest,
-        PyramidDummyRequest,
-    )
-
     _assert_on_comparison = False
+
     method = None
     url = None
     headers = None
