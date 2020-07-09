@@ -19,6 +19,7 @@ class TestAny:
             "mapping",
             "object",
             "of",
+            "request",
             "set",
             "string",
             "url",
