@@ -248,13 +248,33 @@ class AnyURLCore(Matcher):
 
         return None, path
 
-    def _matches_url(self, other):
+    def assert_equal_to(self, other):
+        """Assert that the URL object is equal to another object.
+
+        :raise AssertionError: If no match is found with details of why
+        """
+
         if not isinstance(other, str):
-            return False
+            raise AssertionError("Other URL is not a string")
 
         comparison = self.parse_url(other)
 
-        return self.parts == comparison
+        for key, self_value in self.parts.items():
+            other_value = comparison.get(key)
+
+            if self_value != other_value:
+                raise AssertionError(f"Other '{key}' {other_value} != {self_value}")
+
+    def _matches_url(self, other):
+        try:
+            self.assert_equal_to(other)
+        except AssertionError:
+            if self.assert_on_comparison:
+                raise
+
+            return False
+
+        return True
 
 
 class MultiValueQuery(list):
