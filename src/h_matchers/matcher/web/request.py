@@ -54,12 +54,6 @@ class AnyRequest(Matcher):  # pragma: no cover
         {RequestsRequest, RequestsPreparedRequest, PyramidRequest, PyramidDummyRequest}
     )
 
-    # Enable failing on comparison instead of returning False. This can be very
-    # useful for debugging as we can fail fast and return a message about why
-    # we can't match. We might want to think about making this a more general
-    # feature. It would be very handy for the more complex matchers
-    _assert_on_comparison = False
-
     method = None
     url = None
     headers = None
@@ -157,8 +151,8 @@ class AnyRequest(Matcher):  # pragma: no cover
         if self.method is not None and self.method != other.method.upper():
             raise AssertionError(f"Method '{other.method}' != '{self.method}'")
 
-        if self.url is not None and self.url != other.url:
-            raise AssertionError(f"URL '{other.url}' != '{self.url}'")
+        if self.url is not None:
+            self.url.assert_equal_to(other.url)
 
         if self.headers is not None:
             other_headers = self._comparison_headers(other)
@@ -179,7 +173,7 @@ class AnyRequest(Matcher):  # pragma: no cover
         try:
             self.assert_equal_to(other)
         except AssertionError:
-            if self._assert_on_comparison:
+            if self.assert_on_comparison:
                 raise
             return False
 

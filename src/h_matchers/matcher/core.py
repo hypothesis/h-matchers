@@ -14,6 +14,12 @@ class Matcher:
     other.
     """
 
+    # Enable failing on comparison instead of returning False. This can be very
+    # useful for debugging as we can fail fast and return a message about why
+    # we can't match. We might want to think about making this a more general
+    # feature. It is up to individual matchers to support it
+    assert_on_comparison = False
+
     def __init__(self, description, test_function):
         self._description = description
         self._test_function = test_function
