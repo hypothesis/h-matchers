@@ -186,6 +186,15 @@ class TestAnyURL:
         assert "boo" in repr(matcher)
         assert "boo" in str(matcher)
 
+    def test_it_raises_with_assert_on_comparison_enabled(self):
+        # Normally you'd turn this on for the whole class, but it has totally
+        # non-local effects and explodes the tests
+        matcher = AnyURLCore(scheme="missing")
+        matcher.assert_on_comparison = True
+
+        with pytest.raises(AssertionError):
+            _ = "abc" == matcher
+
     def test_stringification_default(self):
         assert str(AnyURLCore()) == "* any URL *"
 
