@@ -14,7 +14,7 @@ class Matcher:
     other.
     """
 
-    # Enable failing on comparison instead of returning False. This can be very
+    # Enable raising on comparison instead of returning False. This can be very
     # useful for debugging as we can fail fast and return a message about why
     # we can't match. We might want to think about making this a more general
     # feature. It is up to individual matchers to support it
