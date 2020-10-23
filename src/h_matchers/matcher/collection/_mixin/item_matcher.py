@@ -38,7 +38,7 @@ class ItemMatcherMixin:
         items = original.keys() if isinstance(original, dict) else other
 
         for item in items:
-            if not item == self._item_matcher:
+            if not self._item_matcher == item:
                 raise NoMatch("Item does not match item matcher")
 
     def _describe_item_matcher(self):

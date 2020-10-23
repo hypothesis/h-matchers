@@ -1,3 +1,4 @@
+from h_matchers.matcher.anything import AnyThing
 from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.combination import AllOf, AnyOf, NamedMatcher
 from h_matchers.matcher.strings import AnyString
@@ -43,6 +44,15 @@ class TestAllOf:
         assert matcher == 1
         assert matcher == 1
         assert matcher != 10
+
+    def test_it_can_match_objects_with_equals(self):
+        class NeverMatches:
+            def __eq__(self, other):  # pragma: no cover
+                return False
+
+        matcher = AllOf([AnyThing()])
+
+        assert matcher == NeverMatches()
 
 
 class TestNamedMatcher:

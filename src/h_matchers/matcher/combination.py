@@ -24,7 +24,7 @@ class AllOf(Matcher):
 
         super().__init__(
             f"* all of {options} *",
-            lambda other: all(other == option for option in options),
+            lambda other: all(option == other for option in options),
         )
 
 

@@ -23,3 +23,12 @@ class TestItemMatcherMixin:
 
         assert matcher != ["a", "b", 1]
         assert matcher != {"a": 1, "b": 1, 3: None}
+
+    def test_it_can_match_objects_with_equals(self):
+        class NeverMatches:
+            def __eq__(self, other):  # pragma: no cover
+                return False
+
+        matcher = HostClass.comprised_of(Any.instance_of(NeverMatches))
+
+        assert matcher == [NeverMatches()]
