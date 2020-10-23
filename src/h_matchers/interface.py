@@ -1,12 +1,6 @@
 """The public interface class for comparing with things."""
+from h_matchers.matcher import collection
 from h_matchers.matcher.anything import AnyThing
-from h_matchers.matcher.collection import (
-    AnyCollection,
-    AnyDict,
-    AnyList,
-    AnyMapping,
-    AnySet,
-)
 from h_matchers.matcher.combination import AllOf, AnyOf
 from h_matchers.matcher.meta import AnyCallable, AnyFunction
 from h_matchers.matcher.number import AnyInt
@@ -32,11 +26,12 @@ class Any(AnyThing):
     function = AnyFunction
     callable = AnyCallable
 
-    iterable = AnyCollection
-    mapping = AnyMapping
-    list = AnyList
-    set = AnySet
-    dict = AnyDict
+    iterable = collection.AnyCollection
+    mapping = collection.AnyMapping
+    list = collection.AnyList
+    set = collection.AnySet
+    dict = collection.AnyDict
+    tuple = collection.AnyTuple
 
     url = AnyURL
     request = AnyRequest

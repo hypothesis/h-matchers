@@ -4,7 +4,14 @@ import pytest
 
 from h_matchers import Any
 from h_matchers.exception import NoMatch
-from h_matchers.matcher.collection import AnyCollection, AnyMapping
+from h_matchers.matcher.collection import (
+    AnyCollection,
+    AnyDict,
+    AnyList,
+    AnyMapping,
+    AnySet,
+    AnyTuple,
+)
 from tests.unit.data_types import DataTypes
 
 
@@ -96,4 +103,32 @@ class TestAnyMapping:
 
         assert TestObject() == AnyMapping()
         assert dict() == AnyMapping()
-        assert list() != AnyMapping()
+
+    @pytest.mark.parametrize("non_matching", (tuple(), list(), set()))
+    def test_non_matching_items(self, non_matching):
+        assert non_matching != AnyMapping()
+
+
+class TestTypeSpecificCollectionMatchers:
+    TYPES = {
+        AnyTuple: tuple,
+        AnyList: list,
+        AnySet: set,
+        AnyDict: dict,
+    }
+
+    def test_it_matches(self, matcher, data):
+        matching_type = self.TYPES[type(matcher)]
+
+        if isinstance(data, matching_type):
+            assert matcher == data
+        else:
+            assert matcher != data
+
+    @pytest.fixture(params=[AnyTuple, AnyList, AnySet, AnyDict])
+    def matcher(self, request):
+        return request.param()
+
+    @pytest.fixture(params=[tuple, list, set, dict, str, int])
+    def data(self, request):
+        return request.param()

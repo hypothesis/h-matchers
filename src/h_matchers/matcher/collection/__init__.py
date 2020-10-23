@@ -71,6 +71,12 @@ class AnyList(AnyCollection):
     _exact_type = list
 
 
+class AnyTuple(AnyCollection):
+    """A matcher representing any tuple."""
+
+    _exact_type = tuple
+
+
 class AnyMapping(AnyCollection):
     """A matcher representing any mapping."""
 

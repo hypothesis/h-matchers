@@ -17,6 +17,7 @@ class TestAny:
             "iterable",
             "list",
             "mapping",
+            "tuple",
             "object",
             "of",
             "request",
