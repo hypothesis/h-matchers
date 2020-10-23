@@ -26,7 +26,11 @@ class TestAnyOf:
 class TestAllOf:
     def test_requires_all_things_to_match(self):
         matcher = AllOf(
-            [AnyString(), AnyString.containing("foo"), AnyString.containing("bar"),]
+            [
+                AnyString(),
+                AnyString.containing("foo"),
+                AnyString.containing("bar"),
+            ]
         )
 
         assert matcher == "foo bar"

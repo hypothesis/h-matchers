@@ -27,7 +27,7 @@ class VersionSuggester:
         try:
             config = read_configuration("setup.cfg")
         except DistutilsFileError:
-            raise FileNotFoundError("setup.cfg")
+            raise FileNotFoundError("setup.cfg") from None
 
         return version.parse(config["metadata"]["version"])
 
