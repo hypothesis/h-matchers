@@ -93,11 +93,17 @@ class TestAnyIterableWithItems:
     def test_it_matches_generators_out_of_order(self):
         matcher = AnyIterableWithItems([2, 0, 1])
 
-        assert matcher == iter(range(3))
-        assert iter(range(3)) == matcher
+        def matching_gen():
+            yield from range(3)
 
-        assert matcher != iter(range(2))
-        assert iter(range(2)) != matcher
+        assert matcher == matching_gen()
+        assert matching_gen() == matcher
+
+        def non_matching_gen():
+            yield from range(2)
+
+        assert matcher != non_matching_gen()
+        assert non_matching_gen() != matcher
 
     def test_it_can_match_unhashable_in_any_order(self):
         dict_a = {"a": 1}

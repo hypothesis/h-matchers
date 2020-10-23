@@ -1,4 +1,5 @@
 """Flexible matchers for various collection types in a fluent style."""
+from types import GeneratorType
 
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection import _mixin
@@ -75,6 +76,12 @@ class AnyTuple(AnyCollection):
     """A matcher representing any tuple."""
 
     _exact_type = tuple
+
+
+class AnyGenerator(AnyCollection):
+    """A matcher representing any generator."""
+
+    _exact_type = GeneratorType
 
 
 class AnyMapping(AnyCollection):
