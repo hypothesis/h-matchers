@@ -14,6 +14,8 @@ class TestAny:
             "function",
             "instance_of",
             "int",
+            "float",
+            "complex",
             "iterable",
             "list",
             "mapping",

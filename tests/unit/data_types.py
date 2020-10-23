@@ -1,5 +1,6 @@
 """Data types for testing the matchers."""
 import enum
+from decimal import Decimal
 
 
 class _PrivateClass:
@@ -30,8 +31,14 @@ class DataTypes(enum.Enum):
     FALSY_INT = (0, "falsy integer")
     FLOAT = (1.0, "float")
     FALSY_FLOAT = (float(0), "falsy float")
+    COMPLEX = (complex(1, 3.14159), "complex")
+    FALSY_COMPLEX = (complex(0, 0), "falsy complex")
+    DECIMAL = (Decimal(1), "decimal")
+    FALSY_DECIMAL = (Decimal(0), "falsy decimal")
+
     TRUE = (True, "true")
     FALSE = (False, "false")
+
     STRING = ("string", "string")
     FALSY_STRING = ("", "falsy string")
 
@@ -78,6 +85,10 @@ class Groups:
     STRINGS = {DataTypes.STRING, DataTypes.FALSY_STRING}
 
     INTS = {DataTypes.INT, DataTypes.FALSY_INT}
+    FLOATS = {DataTypes.FLOAT, DataTypes.FALSY_FLOAT}
+    COMPLEX = {DataTypes.COMPLEX, DataTypes.FALSY_COMPLEX}
+    DECIMAL = {DataTypes.DECIMAL, DataTypes.FALSY_DECIMAL}
+    NUMERIC = INTS | FLOATS | COMPLEX | DECIMAL
 
     ITERABLES = STRINGS | {
         DataTypes.LIST,
