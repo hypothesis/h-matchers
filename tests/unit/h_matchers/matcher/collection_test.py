@@ -125,7 +125,7 @@ class TestAnyMapping:
 
 
 class TestTypeSpecificCollectionMatchers:
-    TYPES = {
+    MATCHING_TYPE = {
         AnyTuple: tuple,
         AnyList: list,
         AnySet: set,
@@ -133,18 +133,17 @@ class TestTypeSpecificCollectionMatchers:
         AnyGenerator: GeneratorType,
     }
 
-    def test_it_matches(self, matcher, data):
-        matching_type = self.TYPES[type(matcher)]
+    @pytest.mark.parametrize(
+        "item,_", DataTypes.parameters(exact=DataTypes.Groups.ITERABLES)
+    )
+    def test_it_matches(self, matcher, item, _):
+        matching_type = self.MATCHING_TYPE[type(matcher)]
 
-        if isinstance(data, matching_type):
-            assert matcher == data
+        if isinstance(item, matching_type):
+            assert matcher == item
         else:
-            assert matcher != data
+            assert matcher != item
 
     @pytest.fixture(params=[AnyTuple, AnyList, AnySet, AnyDict, AnyGenerator])
     def matcher(self, request):
-        return request.param()
-
-    @pytest.fixture(params=[tuple, list, set, dict, str, int, lambda: range(3)])
-    def data(self, request):
         return request.param()
