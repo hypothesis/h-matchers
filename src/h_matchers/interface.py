@@ -1,9 +1,8 @@
 """The public interface class for comparing with things."""
-from h_matchers.matcher import collection
+from h_matchers.matcher import collection, number
 from h_matchers.matcher.anything import AnyThing
 from h_matchers.matcher.combination import AllOf, AnyOf
 from h_matchers.matcher.meta import AnyCallable, AnyFunction
-from h_matchers.matcher.number import AnyInt
 from h_matchers.matcher.object import AnyObject
 from h_matchers.matcher.strings import AnyString
 from h_matchers.matcher.web.request import AnyRequest
@@ -20,8 +19,11 @@ class Any(AnyThing):
     # pylint: disable=too-few-public-methods
 
     string = AnyString
-    int = AnyInt
     object = AnyObject
+
+    int = number.AnyInt
+    float = number.AnyFloat
+    complex = number.AnyComplex
 
     function = AnyFunction
     callable = AnyCallable
