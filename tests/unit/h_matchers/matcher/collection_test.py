@@ -1,3 +1,4 @@
+from types import GeneratorType
 from unittest.mock import Mock, create_autospec
 
 import pytest
@@ -7,6 +8,7 @@ from h_matchers.exception import NoMatch
 from h_matchers.matcher.collection import (
     AnyCollection,
     AnyDict,
+    AnyGenerator,
     AnyList,
     AnyMapping,
     AnySet,
@@ -94,6 +96,19 @@ class TestAnyCollection:
         assert matcher._items == [1, 2]
         assert matcher._exact_type == list
 
+    def test_it_matches_generators(self):
+        matcher = AnyCollection.containing([2])
+
+        def good_gen():
+            yield from range(4)
+
+        assert matcher == good_gen()
+
+        def bad_gen():
+            yield from range(100, 102)
+
+        assert matcher != bad_gen()
+
 
 class TestAnyMapping:
     def test_any_mapping_requires_items(self):
@@ -115,6 +130,7 @@ class TestTypeSpecificCollectionMatchers:
         AnyList: list,
         AnySet: set,
         AnyDict: dict,
+        AnyGenerator: GeneratorType,
     }
 
     def test_it_matches(self, matcher, data):
@@ -125,10 +141,10 @@ class TestTypeSpecificCollectionMatchers:
         else:
             assert matcher != data
 
-    @pytest.fixture(params=[AnyTuple, AnyList, AnySet, AnyDict])
+    @pytest.fixture(params=[AnyTuple, AnyList, AnySet, AnyDict, AnyGenerator])
     def matcher(self, request):
         return request.param()
 
-    @pytest.fixture(params=[tuple, list, set, dict, str, int])
+    @pytest.fixture(params=[tuple, list, set, dict, str, int, lambda: range(3)])
     def data(self, request):
         return request.param()

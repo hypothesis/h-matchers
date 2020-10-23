@@ -28,12 +28,14 @@ class Any(AnyThing):
     function = AnyFunction
     callable = AnyCallable
 
-    iterable = collection.AnyCollection
     mapping = collection.AnyMapping
+    dict = collection.AnyDict
+
+    iterable = collection.AnyCollection
     list = collection.AnyList
     set = collection.AnySet
-    dict = collection.AnyDict
     tuple = collection.AnyTuple
+    generator = collection.AnyGenerator
 
     url = AnyURL
     request = AnyRequest

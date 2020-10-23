@@ -1,4 +1,5 @@
 """A mixin for AnyCollection which lets you check for specific items."""
+from types import GeneratorType
 
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.exception import NoMatch
@@ -88,7 +89,11 @@ class ContainsMixin:
         else:
             matcher_class = AnyIterableWithItems
 
-        if matcher_class(self._items) != original:
+        # If the original object was a generator compare against our copy of
+        # the values, not the original object, as it will have been consumed
+        compare_to = other if isinstance(original, GeneratorType) else original
+
+        if matcher_class(self._items) != compare_to:
             raise NoMatch()
 
     def _describe_contains(self):
