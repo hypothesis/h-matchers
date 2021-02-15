@@ -14,6 +14,7 @@ class AnyURL(AnyURLCore):
         "scheme": AnyString(),
         "host": AnyString(),
         "path": AnyString(),
+        "params": AnyString(),
         "query": AnyMapping(),
         "fragment": AnyString(),
     }
@@ -34,6 +35,10 @@ class AnyURL(AnyURLCore):
 
     @staticmethod
     def with_path(path=AnyURLCore.APPLY_DEFAULT):
+        """Confuse pylint so it doesn't complain about fluent-endpoints."""
+
+    @staticmethod
+    def with_params(params=AnyURLCore.APPLY_DEFAULT):
         """Confuse pylint so it doesn't complain about fluent-endpoints."""
 
     @staticmethod
@@ -92,6 +97,16 @@ class AnyURL(AnyURLCore):
             self.parts["path"] = self._get_path_matcher(
                 path, self.parts["scheme"], self.parts["host"]
             )
+
+    @fluent_entrypoint
+    def with_params(self, params=AnyURLCore.APPLY_DEFAULT):
+        """Specify that this URL must have a params or None.
+
+        If you pass None this will ensure the URL has no params.
+
+        :param params: None, string or matcher for the params
+        """
+        self.parts["params"] = self._apply_field_default("params", params)
 
     @fluent_entrypoint
     def containing_query(self, query):
