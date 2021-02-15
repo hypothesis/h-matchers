@@ -80,6 +80,7 @@ class AnyURLCore(Matcher):
         "scheme": STRING_OR_NONE,
         "host": STRING_OR_NONE,
         "path": STRING_OR_NONE,
+        "params": STRING_OR_NONE,
         "query": MAP_OR_NONE,
         "fragment": STRING_OR_NONE,
     }
@@ -93,6 +94,7 @@ class AnyURLCore(Matcher):
         scheme=APPLY_DEFAULT,
         host=APPLY_DEFAULT,
         path=APPLY_DEFAULT,
+        params=APPLY_DEFAULT,
         query=APPLY_DEFAULT,
         fragment=APPLY_DEFAULT,
     ):
@@ -102,6 +104,7 @@ class AnyURLCore(Matcher):
         :param scheme: Scheme to match (e.g. http)
         :param host: Hostname to match
         :param path: URL path to match
+        :param params: URL path params to match
         :param query: Query to match (string, dict or matcher)
         :param fragment: Anchor fragment to match (e.g. "name" for "#name")
         """
@@ -112,6 +115,7 @@ class AnyURLCore(Matcher):
             "host": self._lower_if_string(host),
             # `path`, `query` and `fragment` are case-sensitive
             "path": self._get_path_matcher(path, scheme, host),
+            "params": params,
             "fragment": fragment,
         }
 
@@ -162,6 +166,7 @@ class AnyURLCore(Matcher):
             "scheme": url.scheme.lower() if url.scheme else None,
             "host": url.netloc.lower() if url.netloc else None,
             "path": url.path or None,
+            "params": url.params or None,
             "query": MultiValueQuery.normalise(url.query),
             "fragment": url.fragment or None,
         }

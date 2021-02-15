@@ -15,15 +15,17 @@ class TestAnyURL:
         assert "" == matcher
         assert None != matcher
 
-    BASE_URL = "http://www.example.com/path?a=1&b=2#fragment"
+    BASE_URL = "http://www.example.com/path;params?a=1&b=2#fragment"
 
     # URLs where the specified part is different from BASE_URL
     PART_MODIFIED_URLS = {
-        "scheme": "MODIFIED://www.example.com/path?a=1&b=2#fragment",
-        "host": "http://MODIFIED/path?a=1&b=2#fragment",
-        "path": "http://www.example.com/MODIFIED?a=1&b=2#fragment",
-        "query": "http://www.example.com/path?MODIFIED=1#fragment",
-        "fragment": "http://www.example.com/path?a=1&b=2#MODIFIED",
+        # We must use a URL scheme with `params` for this test
+        "scheme": "ftp://www.example.com/path;params?a=1&b=2#fragment",
+        "host": "http://MODIFIED/path;params?a=1&b=2#fragment",
+        "path": "http://www.example.com/MODIFIED;params?a=1&b=2#fragment",
+        "params": "http://www.example.com/path;MODIFIED?a=1&b=2#fragment",
+        "query": "http://www.example.com/path;params?MODIFIED=1#fragment",
+        "fragment": "http://www.example.com/path;params?a=1&b=2#MODIFIED",
     }
 
     @pytest.mark.parametrize(
@@ -33,6 +35,7 @@ class TestAnyURL:
         self, part, url_with_part_changed
     ):
         # Create a matcher with the specified part wild i.e. `scheme=Any()`
+
         matcher = AnyURLCore(self.BASE_URL, **{part: Any()})
 
         # Check it matches the original URL and the URL with that part changed
@@ -70,11 +73,12 @@ class TestAnyURL:
         "part,url_with_part_missing",
         (
             # URLs where the specified part is missing from BASE_URL
-            ("scheme", "www.example.com/path?a=1&b=2#fragment"),
-            ("host", "http:///path?a=1&b=2#fragment"),
-            ("path", "http://www.example.com?a=1&b=2#fragment"),
-            ("query", "http://www.example.com/path#fragment"),
-            ("fragment", "http://www.example.com/path?a=1&b=2"),
+            ("scheme", "www.example.com/path;params?a=1&b=2#fragment"),
+            ("host", "http:///path;params?a=1&b=2#fragment"),
+            ("path", "http://www.example.com;params?a=1&b=2#fragment"),
+            ("params", "http://www.example.com/path?a=1&b=2#fragment"),
+            ("query", "http://www.example.com/path;params#fragment"),
+            ("fragment", "http://www.example.com/path;params?a=1&b=2"),
         ),
     )
     def test_you_can_override_default_with_params(self, part, url_with_part_missing):
@@ -92,13 +96,14 @@ class TestAnyURL:
 
         # https://tools.ietf.org/html/rfc7230#section-2.7.3
         # scheme and host are case-insensitive
-        assert matcher == "HTTP://www.example.com/path?a=1&b=2#fragment"
-        assert matcher == "http://WWW.EXAMPLE.COM/path?a=1&b=2#fragment"
+        assert matcher == "HTTP://www.example.com/path;params?a=1&b=2#fragment"
+        assert matcher == "http://WWW.EXAMPLE.COM/path;params?a=1&b=2#fragment"
 
         # ... path, query string and fragment are case-sensitive
-        assert matcher != "http://www.example.com/PATH?a=1&b=2#fragment"
-        assert matcher != "http://www.example.com/path?A=1&B=2#fragment"
-        assert matcher != "http://www.example.com/path?a=1&b=2#FRAGMENT"
+        assert matcher != "http://www.example.com/PATH;params?a=1&b=2#fragment"
+        assert matcher != "http://www.example.com/path;PARAMS?a=1&b=2#fragment"
+        assert matcher != "http://www.example.com/path;params?A=1&B=2#fragment"
+        assert matcher != "http://www.example.com/path;params?a=1&b=2#FRAGMENT"
 
     @pytest.mark.parametrize(
         "matcher",
@@ -111,13 +116,14 @@ class TestAnyURL:
     def test_case_sensitivity_for_self(self, matcher):
         # https://tools.ietf.org/html/rfc7230#section-2.7.3
         # scheme and host are case-insensitive
-        assert matcher == "http://WWW.EXAMPLE.COM/PATH?A=1&B=2#FRAGMENT"
-        assert matcher == "HTTP://www.example.com/PATH?A=1&B=2#FRAGMENT"
+        assert matcher == "http://WWW.EXAMPLE.COM/PATH;PARAMS?A=1&B=2#FRAGMENT"
+        assert matcher == "HTTP://www.example.com/PATH;PARAMS?A=1&B=2#FRAGMENT"
 
         # ... path, query string and fragment are case-sensitive
-        assert matcher != "HTTP://WWW.EXAMPLE.COM/path?A=1&B=2#FRAGMENT"
-        assert matcher != "HTTP://WWW.EXAMPLE.COM/PATH?a=1&b=2#FRAGMENT"
-        assert matcher != "HTTP://WWW.EXAMPLE.COM/PATH?A=1&B=2#fragment"
+        assert matcher != "HTTP://WWW.EXAMPLE.COM/path;PARAMS?A=1&B=2#FRAGMENT"
+        assert matcher != "HTTP://WWW.EXAMPLE.COM/PATH;params?A=1&B=2#FRAGMENT"
+        assert matcher != "HTTP://WWW.EXAMPLE.COM/PATH;PARAMS?a=1&b=2#FRAGMENT"
+        assert matcher != "HTTP://WWW.EXAMPLE.COM/PATH;PARAMS?A=1&B=2#fragment"
 
     @pytest.mark.parametrize(
         "part,value",

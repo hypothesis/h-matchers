@@ -53,6 +53,18 @@ class TestAnyURLFluent:
         assert matcher != "http://example.com/different_path"
         assert matcher != "http://example.com/"
 
+    def test_with_params_required(self):
+        matcher = AnyURL.with_params()
+
+        assert matcher == "http://example.com/path;params"
+        assert matcher != "http://example.com/path"
+
+    def test_with_params_specified(self):
+        matcher = AnyURL.with_params("params")
+
+        assert matcher == "http://www.example.com/path;params"
+        assert matcher != "http://www.example.com/path;different"
+
     def test_containing_query(self):
         matcher = AnyURL.containing_query({"a": "b"})
 
