@@ -40,7 +40,11 @@ initialrelease: python
 
 .PHONY: test
 test: python
-	@tox -q
+	@tox -qe `./bin/python_version.py --style tox --first`-tests
+
+.PHONY: testall
+testall: python
+	@tox -qe \{`./bin/python_version.py --style tox --include-future`\}-tests
 
 .PHONY: coverage
 coverage: python
