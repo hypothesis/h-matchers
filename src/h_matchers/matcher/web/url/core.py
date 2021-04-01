@@ -127,7 +127,7 @@ class AnyURLCore(Matcher):
             # Apply default matchers for everything not provided
             self._apply_defaults(self.parts, self.DEFAULTS)
 
-        super().__init__("dummy", self._matches_url)
+        super().__init__("dummy", self.assert_equal_to)
 
     def __str__(self):
         contraints = {
@@ -257,6 +257,7 @@ class AnyURLCore(Matcher):
         """Assert that the URL object is equal to another object.
 
         :raise AssertionError: If no match is found with details of why
+        :return: True if equal
         """
 
         if not isinstance(other, str):
@@ -269,15 +270,6 @@ class AnyURLCore(Matcher):
 
             if self_value != other_value:
                 raise AssertionError(f"Other '{key}' {other_value} != {self_value}")
-
-    def _matches_url(self, other):
-        try:
-            self.assert_equal_to(other)
-        except AssertionError:
-            if self.assert_on_comparison:
-                raise
-
-            return False
 
         return True
 

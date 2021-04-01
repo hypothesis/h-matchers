@@ -25,7 +25,12 @@ class Matcher:
         self._test_function = test_function
 
     def __eq__(self, other):
-        return self._test_function(other)
+        try:
+            return self._test_function(other)
+        except AssertionError:
+            if self.assert_on_comparison:
+                raise
+            return False
 
     def __str__(self):
         return self._description  # pragma: no cover
