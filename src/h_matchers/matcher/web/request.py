@@ -63,7 +63,7 @@ class AnyRequest(Matcher):  # pragma: no cover
         self.with_url(url)
         self.with_headers(headers)
 
-        super().__init__("*dummy*", self._matches_request)
+        super().__init__("*dummy*", self.assert_equal_to)
 
     @classmethod
     def containing_headers(cls, headers):
@@ -141,6 +141,7 @@ class AnyRequest(Matcher):  # pragma: no cover
         """Assert that the request object is equal to another object.
 
         :raise AssertionError: If no match is found with details of why
+        :return: True if equal
         """
         if not isinstance(other, self.SUPPORTED_TYPES):
             raise AssertionError(
@@ -159,6 +160,8 @@ class AnyRequest(Matcher):  # pragma: no cover
             if self.headers != other_headers:
                 raise AssertionError(f"Headers {other_headers} != {self.headers}")
 
+        return True
+
     @classmethod
     def _comparison_headers(cls, other):
         if isinstance(other, PyramidRequest):
@@ -168,16 +171,6 @@ class AnyRequest(Matcher):  # pragma: no cover
             return headers
 
         return other.headers
-
-    def _matches_request(self, other):
-        try:
-            self.assert_equal_to(other)
-        except AssertionError:
-            if self.assert_on_comparison:
-                raise
-            return False
-
-        return True
 
     def __str__(self):
         details = ""

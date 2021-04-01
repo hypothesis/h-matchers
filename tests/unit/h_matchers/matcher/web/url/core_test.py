@@ -13,7 +13,7 @@ class TestAnyURL:
         matcher = AnyURLCore()
 
         assert "" == matcher
-        assert None != matcher
+        assert 3 != matcher
 
     BASE_URL = "http://www.example.com/path;params?a=1&b=2#fragment"
 
@@ -200,6 +200,10 @@ class TestAnyURL:
 
         with pytest.raises(AssertionError):
             _ = "abc" == matcher
+
+    @pytest.mark.parametrize("other", (None, 123, True))
+    def test_it_refuses_to_compare_to_non_strings(self, other):
+        assert AnyURLCore() != other
 
     def test_stringification_default(self):
         assert str(AnyURLCore()) == "* any URL *"
