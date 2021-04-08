@@ -41,11 +41,11 @@ initialrelease: python
 
 .PHONY: test
 test: python
-	@tox -qe `./bin/python_version.py --style tox --first`-tests
+	@tox -qe `hdev python_version --style tox --first`-tests
 
 .PHONY: testall
 testall: python
-	@tox -qe \{`./bin/python_version.py --style tox --include-future`\}-tests
+	@tox -qe \{`hdev python_version --style tox --include-future`\}-tests
 
 .PHONY: sure
 sure: checkformatting lint test

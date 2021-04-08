@@ -20,8 +20,9 @@ jobs:
     - name: List Python versions
       id: list-python-versions
       run: |
-        echo "::set-output name=python_versions::`./bin/python_version.py --style gha --floating`"
-        echo "::set-output name=python_headline_version::`./bin/python_version.py --style plain --first`"
+        pip install hdev
+        echo "::set-output name=python_versions::`hdev python_version --style json --floating`"
+        echo "::set-output name=python_headline_version::`hdev python_version --style plain --first`"
 
   lint:
     needs: metadata
