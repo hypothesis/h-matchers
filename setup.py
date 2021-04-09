@@ -1,7 +1,7 @@
 import os
+from configparser import ConfigParser
 
 from setuptools import find_packages, setup
-from setuptools.config import read_configuration
 
 
 class Package:
@@ -68,7 +68,9 @@ class Package:
 
             start = "v" + self.version + "."
             if not build.startswith(start):
-                raise ValueError(f'Expected build to be "{start}*", got "{build}"')
+                raise ValueError(
+                    'Expected build to be "{}*", got "{}"'.format(start, build)
+                )
 
             return self.version + "." + build[len(start) :]
 
@@ -87,7 +89,9 @@ class Package:
         return self.version + ".dev0"
 
 
-package = Package(read_configuration("setup.cfg"))
+config = ConfigParser()
+config.read("setup.cfg")
+package = Package(config)
 
 setup(
     # Metadata
