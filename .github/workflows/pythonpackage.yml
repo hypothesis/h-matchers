@@ -3,6 +3,7 @@ on: [push]
 
 jobs:
   metadata:
+    name: Metadata
     runs-on: ubuntu-latest
     outputs:
       python_versions: ${{ steps.list-python-versions.outputs.python_versions }}
@@ -25,6 +26,7 @@ jobs:
         echo "::set-output name=python_headline_version::`hdev python_version --style plain --first`"
 
   lint:
+    name: Lint
     needs: metadata
     runs-on: ubuntu-latest
     steps:
@@ -53,15 +55,14 @@ jobs:
         pip install pylint
         pylint --reports=y src bin
         pylint --reports=y --rcfile=tests/.pylintrc tests
-
   test:
+    name: Tests on python ${{ matrix.python-version }}
     needs: metadata
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ${{ fromJSON(needs.metadata.outputs.python_versions) }}
 
-    name: Tests on python ${{ matrix.python-version }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v1
@@ -121,7 +122,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ needs.metadata.outputs.python_headline_version }}
 
@@ -150,7 +151,7 @@ jobs:
         name: dist
 
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ needs.metadata.outputs.python_headline_version }}
 
