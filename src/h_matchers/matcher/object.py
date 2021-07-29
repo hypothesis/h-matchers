@@ -33,7 +33,7 @@ class AnyObject(Matcher):  # pragma: no cover
         self.__type = type_
         self.__attributes = attributes
 
-        super().__init__("dummy", self._matches_object)
+        super().__init__("dummy", self.assert_equal_to)
 
     @staticmethod
     def of_type(type_):
@@ -73,17 +73,28 @@ class AnyObject(Matcher):  # pragma: no cover
 
         self.__attributes = attributes
 
-    def _matches_object(self, other):
+    def assert_equal_to(self, other):
+        """Assert that the object is equal to another object.
+
+        :raise AssertionError: If no match is found with details of why
+        :return: True if equal
+        """
+
         if self.__type is not None and not isinstance(other, self.__type):
-            return False
+            raise AssertionError(
+                f"Expected other object to be of type '{self.__type}', found: '{type(other)}'"
+            )
 
         if self.__attributes is not None:
             for key, value in self.__attributes.items():
                 if not hasattr(other, key):
-                    return False
+                    raise AssertionError(f"Expected attribute '{key}' on {other}")
 
-                if getattr(other, key) != value:
-                    return False
+                other_value = getattr(other, key)
+                if other_value != value:
+                    raise AssertionError(
+                        f"Expected attribute '{key}' == '{value}', found: '{other_value}"
+                    )
 
         return True
 
