@@ -26,10 +26,15 @@ class TestAnyObject:
         ),
     )
     def test_it_matches_types_correctly(self, type_, instance, matches):
+        matcher = AnyObject(type_=type_)
+
         if matches:
-            assert instance == AnyObject(type_=type_)
+            assert instance == matcher
+            assert matcher.assert_equal_to(instance)
         else:
-            assert instance != AnyObject(type_=type_)
+            assert instance != matcher
+            with pytest.raises(AssertionError):
+                matcher.assert_equal_to(instance)
 
     @pytest.mark.parametrize(
         "attributes,matches",
@@ -44,11 +49,15 @@ class TestAnyObject:
     )
     def test_it_matches_with_attributes_correctly(self, attributes, matches):
         other = ValueObject(one="one", two="two")
+        matcher = AnyObject.with_attrs(attributes)
 
         if matches:
-            assert other == AnyObject.with_attrs(attributes)
+            assert other == matcher
+            assert matcher.assert_equal_to(other)
         else:
-            assert other != AnyObject.with_attrs(attributes)
+            assert other != matcher
+            with pytest.raises(AssertionError):
+                matcher.assert_equal_to(other)
 
     @pytest.mark.parametrize("bad_input", (None, 1, []))
     def test_it_raise_ValueError_if_attributes_does_not_support_items(self, bad_input):
