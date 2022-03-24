@@ -56,61 +56,6 @@ class TestAnyNumber:
         assert str(matcher) == string
 
 
-class TestAnyInt:
-    @pytest.mark.parametrize(
-        "item,_", DataTypes.parameters(exact=DataTypes.Groups.INTS)
-    )
-    def test_it_matches(self, item, _):
-        assert AnyInt() == item
-        assert item == AnyInt()
-
-    @pytest.mark.parametrize(
-        "item,_", DataTypes.parameters(exclude=DataTypes.Groups.INTS)
-    )
-    def test_it_does_not_match(self, item, _):
-        assert AnyInt() != item
-        assert item != AnyInt()
-
-    @pytest.mark.parametrize(
-        "value,matcher,should_match",
-        (
-            (3, AnyInt() > 2, True),
-            (2, AnyInt() > 2, False),
-            (1, AnyInt() > 2, False),
-            (3, AnyInt().greater_than(2), True),
-            (2, AnyInt().greater_than(2), False),
-            (1, AnyInt().greater_than(2), False),
-            (3, AnyInt() >= 2, True),
-            (2, AnyInt() >= 2, True),
-            (1, AnyInt() >= 2, False),
-            (3, AnyInt().greater_than_or_equal_to(2), True),
-            (2, AnyInt().greater_than_or_equal_to(2), True),
-            (1, AnyInt().greater_than_or_equal_to(2), False),
-            (3, AnyInt() < 2, False),
-            (2, AnyInt() < 2, False),
-            (1, AnyInt() < 2, True),
-            (3, AnyInt().less_than(2), False),
-            (2, AnyInt().less_than(2), False),
-            (1, AnyInt().less_than(2), True),
-            (3, AnyInt() <= 2, False),
-            (2, AnyInt() <= 2, True),
-            (1, AnyInt() <= 2, True),
-            (3, AnyInt().less_than_or_equal_to(2), False),
-            (2, AnyInt().less_than_or_equal_to(2), True),
-            (1, AnyInt().less_than_or_equal_to(2), True),
-            (4, AnyInt().multiple_of(2), True),
-            (3, AnyInt().multiple_of(2), False),
-            (4, AnyInt().even(), True),
-            (3, AnyInt().even(), False),
-            (4, AnyInt().odd(), False),
-            (3, AnyInt().odd(), True),
-        ),
-    )
-    def test_comparators(self, value, matcher, should_match):
-        assert bool(value == matcher) == should_match
-        assert bool(matcher == value) == should_match
-
-
 class TestAnyReal:
     @pytest.mark.parametrize(
         "item,_", DataTypes.parameters(exact=DataTypes.Groups.REALS)
@@ -129,6 +74,36 @@ class TestAnyReal:
     @pytest.mark.parametrize(
         "value,matcher,should_match",
         (
+            (3, AnyReal() > 2, True),
+            (2, AnyReal() > 2, False),
+            (1, AnyReal() > 2, False),
+            (3, AnyReal().greater_than(2), True),
+            (2, AnyReal().greater_than(2), False),
+            (1, AnyReal().greater_than(2), False),
+            (3, AnyReal() >= 2, True),
+            (2, AnyReal() >= 2, True),
+            (1, AnyReal() >= 2, False),
+            (3, AnyReal().greater_than_or_equal_to(2), True),
+            (2, AnyReal().greater_than_or_equal_to(2), True),
+            (1, AnyReal().greater_than_or_equal_to(2), False),
+            (3, AnyReal() < 2, False),
+            (2, AnyReal() < 2, False),
+            (1, AnyReal() < 2, True),
+            (3, AnyReal().less_than(2), False),
+            (2, AnyReal().less_than(2), False),
+            (1, AnyReal().less_than(2), True),
+            (3, AnyReal() <= 2, False),
+            (2, AnyReal() <= 2, True),
+            (1, AnyReal() <= 2, True),
+            (3, AnyReal().less_than_or_equal_to(2), False),
+            (2, AnyReal().less_than_or_equal_to(2), True),
+            (1, AnyReal().less_than_or_equal_to(2), True),
+            (4, AnyReal().multiple_of(2), True),
+            (3, AnyReal().multiple_of(2), False),
+            (4, AnyReal().even(), True),
+            (3, AnyReal().even(), False),
+            (4, AnyReal().odd(), False),
+            (3, AnyReal().odd(), True),
             (4, AnyReal().approximately(4), True),
             (4.0001, AnyReal().approximately(4), True),
             (4.3, AnyReal().approximately(4), False),
@@ -138,6 +113,22 @@ class TestAnyReal:
     def test_comparators(self, value, matcher, should_match):
         assert bool(value == matcher) == should_match
         assert bool(matcher == value) == should_match
+
+
+class TestAnyInt:
+    @pytest.mark.parametrize(
+        "item,_", DataTypes.parameters(exact=DataTypes.Groups.INTS)
+    )
+    def test_it_matches(self, item, _):
+        assert AnyInt() == item
+        assert item == AnyInt()
+
+    @pytest.mark.parametrize(
+        "item,_", DataTypes.parameters(exclude=DataTypes.Groups.INTS)
+    )
+    def test_it_does_not_match(self, item, _):
+        assert AnyInt() != item
+        assert item != AnyInt()
 
 
 class TestAnyFloat:
