@@ -22,10 +22,11 @@ class Any(AnyThing):
     string = AnyString
     object = AnyObject
 
-    number = _number.AnyNumber
+    number = _number.AnyReal
     int = _number.AnyInt
     float = _number.AnyFloat
     complex = _number.AnyComplex
+    decimal = _number.AnyDecimal
 
     function = AnyFunction
     callable = AnyCallable

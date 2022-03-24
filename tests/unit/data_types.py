@@ -89,6 +89,7 @@ class Groups:
     COMPLEX = {DataTypes.COMPLEX, DataTypes.FALSY_COMPLEX}
     DECIMAL = {DataTypes.DECIMAL, DataTypes.FALSY_DECIMAL}
     NUMERIC = INTS | FLOATS | COMPLEX | DECIMAL
+    REALS = INTS | FLOATS | DECIMAL
 
     ITERABLES = STRINGS | {
         DataTypes.LIST,
