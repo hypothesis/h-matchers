@@ -1,5 +1,6 @@
 """The public interface class for comparing with things."""
-from h_matchers.matcher import collection, number
+from h_matchers.matcher import collection
+from h_matchers.matcher import number as _number
 from h_matchers.matcher.anything import AnyThing
 from h_matchers.matcher.combination import AllOf, AnyOf
 from h_matchers.matcher.meta import AnyCallable, AnyFunction
@@ -21,9 +22,10 @@ class Any(AnyThing):
     string = AnyString
     object = AnyObject
 
-    int = number.AnyInt
-    float = number.AnyFloat
-    complex = number.AnyComplex
+    number = _number.AnyNumber
+    int = _number.AnyInt
+    float = _number.AnyFloat
+    complex = _number.AnyComplex
 
     function = AnyFunction
     callable = AnyCallable
