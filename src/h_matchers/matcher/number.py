@@ -7,6 +7,8 @@ from h_matchers.matcher.core import Matcher
 
 
 class AnyNumber(Matcher):
+    """Matches any number."""
+
     _types = (int, float, complex, Decimal)
     _type_description = "number"
 
@@ -29,8 +31,11 @@ class AnyNumber(Matcher):
 
         return True
 
+    def not_equal_to(self, value):
+        return self._add_condition(f"!= {value}", lambda other: other != value)
+
     def truthy(self):
-        return self._add_condition("falsy", bool)
+        return self._add_condition("truthy", bool)
 
     def falsy(self):
         return self._add_condition("falsy", lambda other: not bool(other))
@@ -43,6 +48,9 @@ class AnyNumber(Matcher):
         parts = [self._type_description]
         for condition_label, _ in self.conditions:
             parts.append(condition_label)
+
+        if len(parts) > 3:
+            parts[-1] = f"and {parts[-1]}"
 
         return f"** any {', '.join(parts)} **"
 
