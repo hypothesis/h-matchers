@@ -31,7 +31,6 @@ class TestAnyStringContaining:
         matcher = AnyStringContaining("specific string")
         assert matcher == "a long string with a specific string in it"
 
-        # pylint: disable=misplaced-comparison-constant
         assert "a long string with a specific string in it" == matcher
 
     @pytest.mark.parametrize("item,_", DataTypes.parameters())
@@ -46,7 +45,6 @@ class TestAnyStringMatching:
         matcher = AnyStringMatching("a.*b")
         assert matcher == "a to b"
 
-        # pylint: disable=misplaced-comparison-constant
         assert "a to b" == matcher
         assert "A to B" != matcher
 
@@ -54,7 +52,6 @@ class TestAnyStringMatching:
         matcher = AnyStringMatching("a.*b", flags=re.IGNORECASE)
         assert matcher == "a to b"
 
-        # pylint: disable=misplaced-comparison-constant
         assert "A to B" == matcher
 
     @pytest.mark.parametrize("item,_", DataTypes.parameters())

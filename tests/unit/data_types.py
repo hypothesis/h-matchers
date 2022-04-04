@@ -57,7 +57,7 @@ class DataTypes(enum.Enum):
     LIST = ([], "list")
     SET = (set(), "set")
     TUPLE = ((), "tuple")
-    DICT = (dict(), "dict")
+    DICT = ({}, "dict")
 
     CLASS = (_PrivateClass, "class")  # pragma: no cover
     CLASS_INSTANCE = (PRIVATE_CLASS, "class instance")  # pragma: no cover

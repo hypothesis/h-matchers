@@ -117,9 +117,10 @@ class TestAnyMapping:
                 yield from self  # pragma: no cover
 
         assert TestObject() == AnyMapping()
-        assert dict() == AnyMapping()
+        # pylint: disable=use-implicit-booleaness-not-comparison
+        assert {} == AnyMapping()
 
-    @pytest.mark.parametrize("non_matching", (tuple(), list(), set()))
+    @pytest.mark.parametrize("non_matching", (tuple(), [], set()))
     def test_non_matching_items(self, non_matching):
         assert non_matching != AnyMapping()
 
