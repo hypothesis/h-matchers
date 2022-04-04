@@ -1,4 +1,3 @@
-# pylint: disable=misplaced-comparison-constant
 import pytest
 
 from h_matchers import Any

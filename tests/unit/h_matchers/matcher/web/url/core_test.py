@@ -5,7 +5,7 @@ from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.web.url.core import AnyURLCore, MultiValueQuery
 
 # We do lots of goofy comparisons on purpose
-# pylint: disable=misplaced-comparison-constant,compare-to-empty-string
+# pylint: disable=compare-to-empty-string
 
 
 class TestAnyURL:

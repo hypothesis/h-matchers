@@ -3,14 +3,12 @@ from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.combination import AllOf, AnyOf, NamedMatcher
 from h_matchers.matcher.strings import AnyString
 
-# pylint: disable=misplaced-comparison-constant,singleton-comparison
-
 
 class TestAnyOf:
     def test_any_match_will_do(self):
         matcher = AnyOf([1, None, "fish"])
 
-        assert None == matcher
+        assert None == matcher  # pylint: disable=singleton-comparison
         assert 1 == matcher
         assert "fish" == matcher
 
@@ -59,6 +57,7 @@ class TestNamedMatcher:
     def test_it_matches_like_its_contents(self):
         matcher = NamedMatcher("string", AnyMapping())
 
+        # pylint: disable=use-implicit-booleaness-not-comparison
         assert matcher == {}
         assert matcher != []
 
