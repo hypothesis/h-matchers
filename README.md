@@ -52,6 +52,8 @@ For more details see:
   of matching collections and objects
 * [Matching web objects](docs/matching-web.md) - For details about matching
   URLs, and web requests
+* [Matching numbers](docs/matching-numbers.md) - For details about matching
+  ints, floats etc. with conditions
 
 Hacking
 -------
