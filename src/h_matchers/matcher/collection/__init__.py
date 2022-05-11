@@ -18,14 +18,13 @@ class AnyCollection(
     def __init__(self):
         # Pass None as our function, as we will be in charge of our own type
         # checking
-        super().__init__("dummy", None)
+        super().__init__("dummy", self.assert_equal_to)
 
-    def __eq__(self, other):
+    def assert_equal_to(self, other):
         try:
             copy = list(other)
-        except TypeError:
-            # Not iterable
-            return False
+        except TypeError as err:
+            raise AssertionError("Object is not iterable") from err
 
         # Execute checks roughly in complexity order
         for checker in [
@@ -36,8 +35,8 @@ class AnyCollection(
         ]:
             try:
                 checker(copy, original=other)
-            except NoMatch:
-                return False
+            except NoMatch as err:
+                raise AssertionError("No match could be found") from err
 
         return True
 
@@ -87,8 +86,7 @@ class AnyGenerator(AnyCollection):
 class AnyMapping(AnyCollection):
     """A matcher representing any mapping."""
 
-    def __eq__(self, other):
-        if not hasattr(other, "items"):
-            return False
+    def assert_equal_to(self, other):
+        assert hasattr(other, "items"), "Mapping object needs items()"
 
-        return super().__eq__(other)
+        return super().assert_equal_to(other)
