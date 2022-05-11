@@ -39,6 +39,20 @@ class TestMatcher:
         with pytest.raises(AssertionError):
             matcher.__eq__(sentinel.other)
 
+    def test_it_grabs_last_matched(self, function):
+        function.side_effect = (True, False)
+        matcher = Matcher(sentinel.description, function)
+
+        assert matcher.last_matched(None) is None
+        assert matcher.last_matched(...) is ...
+        assert not matcher.matched_to
+
+        assert matcher == "match"
+        assert matcher != "not_match"
+
+        assert matcher.last_matched() == "match"
+        assert matcher.matched_to == ["match"]
+
     @pytest.fixture
     def raise_assertion_error(self, function):
         function.side_effect = AssertionError
