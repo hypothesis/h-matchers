@@ -37,7 +37,8 @@ class TestMatcher:
         matcher.assert_on_comparison = True
 
         with pytest.raises(AssertionError):
-            matcher.__eq__(sentinel.other)
+            # pylint: disable=pointless-statement
+            matcher == sentinel.other
 
     def test_it_grabs_last_matched(self, function):
         function.side_effect = (True, False)
