@@ -9,15 +9,11 @@ from h_matchers.matcher.strings import AnyString
 from h_matchers.matcher.web.request import AnyRequest
 from h_matchers.matcher.web.url import AnyURL
 
-# pylint: disable=too-few-public-methods
-
 __all__ = ["Any", "All"]
 
 
 class Any(AnyThing):
     """Matches anything and provides access to other matchers."""
-
-    # pylint: disable=too-few-public-methods
 
     string = AnyString
     object = AnyObject

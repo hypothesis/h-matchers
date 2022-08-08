@@ -1,7 +1,5 @@
 """Matchers for comparing to strings."""
 
-# pylint: disable=too-few-public-methods
-
 import re
 
 from h_matchers.matcher.core import Matcher

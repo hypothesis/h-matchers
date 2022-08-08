@@ -1,0 +1,21 @@
+{
+  "template": "https://github.com/hypothesis/cookiecutters",
+  "checkout": null,
+  "directory": "pypackage",
+  "ignore": ["src/h_matchers/core.py", "tests/unit/h_matchers/core_test.py", "tests/functional/sanity_test.py"],
+  "extra_context": {
+    "name": "h-matchers",
+    "package_name": "h_matchers",
+    "slug": "h-matchers",
+    "short_description": "Test objects which pass equality checks with other objects.",
+    "python_versions": "3.9.4, 3.8.9",
+    "github_owner": "hypothesis",
+    "copyright_holder": "Hypothesis",
+    "visibility": "public",
+    "console_script": "no",
+    "dependabot_pip_interval": "monthly",
+    "__entry_point": "h-matchers",
+    "__github_url": "https://github.com/hypothesis/h-matchers",
+    "__pypi_url": "https://pypi.org/project/h-matchers"
+  }
+}

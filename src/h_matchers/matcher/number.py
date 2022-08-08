@@ -1,6 +1,5 @@
 """A collection of matchers for various number types."""
 
-# pylint: disable=too-few-public-methods
 from decimal import Decimal
 
 from h_matchers.matcher.core import Matcher

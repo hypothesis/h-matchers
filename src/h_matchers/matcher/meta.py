@@ -1,7 +1,5 @@
 """Matchers for comparing to functions and classes etc."""
 
-# pylint: disable=too-few-public-methods
-
 from inspect import isclass
 
 from h_matchers.matcher.core import Matcher

@@ -3,8 +3,6 @@
 These are not intended to be used directly.
 """
 
-# pylint: disable=too-few-public-methods
-
 
 class Matcher:
     """Used as the base class for concrete matching classes.

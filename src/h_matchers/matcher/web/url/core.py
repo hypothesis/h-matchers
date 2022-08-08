@@ -66,8 +66,6 @@ from h_matchers.matcher.combination import AnyOf, NamedMatcher
 from h_matchers.matcher.core import Matcher
 from h_matchers.matcher.strings import AnyString, AnyStringMatching
 
-# pylint: disable=too-few-public-methods,no-value-for-parameter
-
 
 class AnyURLCore(Matcher):
     """Matches any URL."""

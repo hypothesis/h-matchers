@@ -1,7 +1,5 @@
 """Matchers for testing collections have specific items."""
 
-# pylint: disable=too-few-public-methods
-
 from h_matchers.exception import NoMatch
 from h_matchers.matcher.core import Matcher
 

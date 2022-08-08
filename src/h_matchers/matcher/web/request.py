@@ -14,7 +14,7 @@ class _LibraryNotAvailable:
     """Substitute for missing libraries."""
 
 
-try:  # pylint: disable=too-many-try-statements
+try:
     # We don't require our clients to install every request library we support
     # so we will enable it if it's around, and carry on without if it's not
     from requests import PreparedRequest as RequestsPreparedRequest
@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
         _LibraryNotAvailable,
     )
 
-try:  # pylint: disable=too-many-try-statements
+try:
     from pyramid.request import Request as PyramidRequest
     from pyramid.testing import DummyRequest as PyramidDummyRequest
 
