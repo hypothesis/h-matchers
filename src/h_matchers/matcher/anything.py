@@ -1,8 +1,6 @@
 """A matcher that matches anything."""
 from h_matchers.matcher.core import Matcher
 
-# pylint: disable=too-few-public-methods
-
 
 class AnyThing(Matcher):
     """Matches anything."""

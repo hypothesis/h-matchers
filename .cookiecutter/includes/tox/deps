@@ -1,0 +1,2 @@
+lint,tests: requests
+lint,tests: pyramid

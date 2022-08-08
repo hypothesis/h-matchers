@@ -1,8 +1,6 @@
 """Matchers formed of combinations of other things."""
 from h_matchers.matcher.core import Matcher
 
-# pylint: disable=too-few-public-methods
-
 
 class AnyOf(Matcher):
     """Match any one of a series of options."""
