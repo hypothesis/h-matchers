@@ -4,6 +4,10 @@ comma := ,
 help = help::; @echo $$$$(tput bold)$(strip $(1)):$$$$(tput sgr0) $(strip $(2))
 $(call help,make help,print this help message)
 
+.PHONY: services
+
+.PHONY: devdata
+
 .PHONY: shell
 $(call help,make shell,"launch a Python shell in this project's virtualenv")
 shell: python
