@@ -80,7 +80,7 @@ Then to set up your development environment:
 
 ```terminal
 git clone https://github.com/hypothesis/h-matchers.git
-cd h_matchers
+cd h-matchers
 make help
 ```
 
