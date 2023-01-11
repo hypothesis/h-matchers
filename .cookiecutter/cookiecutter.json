@@ -2,7 +2,11 @@
   "template": "https://github.com/hypothesis/cookiecutters",
   "checkout": null,
   "directory": "pypackage",
-  "ignore": ["src/h_matchers/core.py", "tests/unit/h_matchers/core_test.py", "tests/functional/sanity_test.py"],
+  "ignore": [
+    "src/h_matchers/core.py",
+    "tests/unit/h_matchers/core_test.py",
+    "tests/functional/sanity_test.py"
+  ],
   "extra_context": {
     "name": "h-matchers",
     "package_name": "h_matchers",
@@ -16,6 +20,7 @@
     "dependabot_pip_interval": "monthly",
     "__entry_point": "h-matchers",
     "__github_url": "https://github.com/hypothesis/h-matchers",
-    "__pypi_url": "https://pypi.org/project/h-matchers"
+    "__pypi_url": "https://pypi.org/project/h-matchers",
+    "__copyright_year": "2022"
   }
 }
