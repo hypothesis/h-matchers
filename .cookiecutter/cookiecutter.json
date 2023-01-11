@@ -21,6 +21,7 @@
     "__entry_point": "h-matchers",
     "__github_url": "https://github.com/hypothesis/h-matchers",
     "__pypi_url": "https://pypi.org/project/h-matchers",
-    "__copyright_year": "2022"
+    "__copyright_year": "2022",
+    "pypi": "yes"
   }
 }
