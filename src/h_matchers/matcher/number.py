@@ -18,7 +18,6 @@ class AnyNumber(Matcher):
 
     def assert_equal_to(self, other):
         # Ints are also booleans
-        # pylint: disable=compare-to-zero
         assert other is not True and other is not False, "Not a boolean"
 
         # Check it's the right type
