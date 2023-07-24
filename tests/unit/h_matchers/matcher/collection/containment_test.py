@@ -140,3 +140,15 @@ class TestAnyIterableWithItems:
 
         assert ["a", "aa", None] != matcher
         assert matcher != ["a", "aa", None]
+
+    def test_it_remaps_matched_items(self):
+        # This matcher will match against loads of things during the initial
+        # constraint generation. We only want to see the final match
+        sub_matcher = Any()
+        matcher = AnyIterableWithItems([sub_matcher])
+
+        assert matcher == [None, 1, "string"]
+
+        # It's not clear our algorithm is deterministic, but hopefully the first
+        # match is the one we'll hit.
+        assert sub_matcher.matched_to == [None]
