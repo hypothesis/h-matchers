@@ -1,6 +1,5 @@
 """Matchers for testing collections have specific items."""
 
-from h_matchers.exception import NoMatch
 from h_matchers.matcher.core import Matcher
 
 
@@ -54,78 +53,81 @@ class AnyIterableWithItems(Matcher):
 
     @classmethod
     def _contains_in_any_order(cls, container, items_to_match):
-        """Can every item can be uniquely matched to something in container?.
-
-        :param container: An iterable of items to check over
-        :param items_to_match: An iterable of items to try and match
-        :return: A boolean indicating whether each item can be matched
-        """
-
         try:
             container = list(container)
         except TypeError:
             # Not even an iterable
             return False
 
-        try:
-            cls._is_solvable(cls._cross_match(container, items_to_match))
-        except NoMatch:
-            return False
+        # Create a tuple of tuples containing the matcher index, and the set of all
+        # possible indices of items from the container which could be a match. From
+        # here on in, we deal entirely with indices, no matcher matching will happen
+        # again.
+        unsolved = tuple(
+            (
+                match_index,
+                {
+                    item_index
+                    for item_index, item in enumerate(container)
+                    if item == matcher
+                },
+            )
+            for match_index, matcher in enumerate(items_to_match)
+        )
 
-        return True
+        if matched_item_indices := cls._solve(unsolved=unsolved, solved=[]):
+            # Update any matchers to have the correct last history entry.
 
-    @classmethod
-    def _cross_match(cls, container, items_to_match):
-        """Find all possible matches as sets of positions.
+            # For each item in items to match which is matcher, set its history
+            # as if it had just matched against the corresponding item in
+            # container. This will fix the history we mess up during with
+            # matching operations creating unsolved above.
+            for item_to_match, matched_item_index in zip(
+                items_to_match, matched_item_indices
+            ):
+                if isinstance(item_to_match, Matcher):
+                    item_to_match.matched_to = [container[matched_item_index]]
 
-        Look through each item and list every position in the `container` that
-        they match.
-        :yields: Sets of positions which match a particular item
-        """
-        for item in items_to_match:
-            constraint_set = set()
-            for other_pos, other_item in enumerate(container):
-                if item == other_item:
-                    constraint_set.add(other_pos)
-
-            yield constraint_set
-
-    @classmethod
-    def _is_solvable(cls, constraints):
-        """Works out if a set of constraints are mutually incompatible.
-
-        Takes a list of sets of positions and works out if each set can be
-        reduced to a single value which doesn't appear in any other set.
-
-        This indicates that we can match each item to a unique item in the
-        parent object, rather than having multiple objects matching the same
-        thing.
-
-        :param constraints: An iterable of sets of positions
-        :raises NoMatch: If the sets are not resolvable
-        :return: True if the sets are resolvable
-        """
-        # Order items by how many matches they have (ascending)
-        sorted_constraints = sorted(constraints, key=len)
-
-        if not sorted_constraints:
-            # If there are no items to resolve, we have a match!
             return True
 
-        head, tail = sorted_constraints[0], sorted_constraints[1:]
+        return False
 
-        # Otherwise we look at each possible match for the first item in turn
-        for this_match in head:
-            # Pick a match for this item, and then ban every other item from
-            # matching this one
-            try:
-                return cls._is_solvable((set(item) - {this_match} for item in tail))
-            except NoMatch:
-                # Well this branch didn't work out for some reason...
-                continue
+    @classmethod
+    def _solve(cls, unsolved: tuple, solved: list):
+        """Get the first solution as a mapping from match to item index.
 
-        # Oh... no branches worked out
-        raise NoMatch()
+        :param unsolved: Tuple of match indicies to set of target indicies
+        :param solved: Tuple of match indicies to target indicies
+        :return: Tuple of matching target indices
+        """
+
+        # If there are no more unsolved parts, we are done! This is the recusion
+        # base case.
+        if not unsolved:
+            return tuple(item_index for _match_index, item_index in sorted(solved))
+
+        # Sort our unsolved parts by the number of possibilities they have.
+        # Solve those with fewer possibilities first as they are less free.
+        # Separate out the head as the most constrained.
+        head, *tail = sorted(unsolved, key=lambda item: len(item[1]))
+        head_pos, head_possibilities = head
+
+        for chosen_match in head_possibilities:
+            # For every possible match from the head we recurse in...
+
+            if result := cls._solve(
+                # Create a new unsolved tuple by removing the match from all the
+                # other unsolved parts. It's no longer a possibility for them
+                # another part has matched it against the head.
+                unsolved=tuple(
+                    (pos, possibility - {chosen_match}) for pos, possibility in tail
+                ),
+                # Extend the solved parts with the new solution
+                solved=solved + [(head_pos, chosen_match)],
+            ):
+                return result
+
+        return None
 
 
 class AnyMappingWithItems(Matcher):
