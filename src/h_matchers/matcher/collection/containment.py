@@ -53,6 +53,7 @@ class AnyIterableWithItems(Matcher):
 
     @classmethod
     def _contains_in_any_order(cls, container, items_to_match):
+        # See `containment.md` for a description of this algorithm
         try:
             container = list(container)
         except TypeError:
