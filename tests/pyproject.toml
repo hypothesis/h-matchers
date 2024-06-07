@@ -68,6 +68,10 @@ disable = [
 
     # Issues to disable this for false positives, disabling it globally in the meantime https://github.com/PyCQA/pylint/issues/214
     "duplicate-code",
+
+    # Lots of false positives
+    "no-value-for-parameter",
+
 ]
 
 # Just disable PyLint's name style checking for the tests, because we

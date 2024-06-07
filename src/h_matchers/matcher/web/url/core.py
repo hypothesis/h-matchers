@@ -57,6 +57,7 @@ For example:
     Any.url(path="/foo") == "foo"                          # True
     Any.url(path="foo") == "/foo"                          # True
 """
+
 import re
 from collections import Counter
 from urllib.parse import parse_qsl, urlparse

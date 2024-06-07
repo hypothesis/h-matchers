@@ -1,4 +1,5 @@
 """The public interface class for comparing with things."""
+
 from h_matchers.matcher import collection
 from h_matchers.matcher import number as _number
 from h_matchers.matcher.anything import AnyThing

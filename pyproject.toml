@@ -128,6 +128,10 @@ disable = [
 
     # Issues to disable this for false positives, disabling it globally in the meantime https://github.com/PyCQA/pylint/issues/214
     "duplicate-code",
+
+    # Lots of false positives
+    "no-value-for-parameter",
+
 ]
 
 good-names = [
@@ -147,6 +151,9 @@ warn_unused_ignores = true
 disable_error_code = [
     # https://mypy.readthedocs.io/en/stable/error_code_list.html#code-import-untyped
     "import-untyped",
+    "no-redef",
+    "assignment",
+    "import-not-found",
 ]
 
 [[tool.mypy.overrides]]
