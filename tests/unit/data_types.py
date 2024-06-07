@@ -1,4 +1,5 @@
 """Data types for testing the matchers."""
+
 import enum
 from decimal import Decimal
 

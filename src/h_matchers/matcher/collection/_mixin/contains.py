@@ -1,4 +1,5 @@
 """A mixin for AnyCollection which lets you check for specific items."""
+
 from types import GeneratorType
 
 from h_matchers.decorator import fluent_entrypoint

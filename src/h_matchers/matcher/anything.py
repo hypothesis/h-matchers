@@ -1,4 +1,5 @@
 """A matcher that matches anything."""
+
 from h_matchers.matcher.core import Matcher
 
 

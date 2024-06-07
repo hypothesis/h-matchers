@@ -1,4 +1,5 @@
 """Flexible matchers for various collection types in a fluent style."""
+
 from types import GeneratorType
 
 from h_matchers.exception import NoMatch

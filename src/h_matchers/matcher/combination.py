@@ -1,4 +1,5 @@
 """Matchers formed of combinations of other things."""
+
 from h_matchers.matcher.core import Matcher
 
 

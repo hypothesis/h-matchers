@@ -1,4 +1,5 @@
 """Matchers for simple objects."""
+
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.matcher.core import Matcher
 

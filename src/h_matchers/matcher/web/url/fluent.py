@@ -1,4 +1,5 @@
 """A fluent interface over AnyURLCore for matching URLs."""
+
 from h_matchers.decorator import fluent_entrypoint
 from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.strings import AnyString
