@@ -41,6 +41,7 @@ class TestSizeMixin:
     def test_it_matches_maximum_size(self):
         matcher = HostClass.of_size(at_most=2)
 
+        # pylint:disable=use-implicit-booleaness-not-comparison
         assert matcher == []
         assert matcher == [1, 2]
         assert matcher != [1, 2, 3]

@@ -17,6 +17,7 @@ class TestTypeMixin:
     def test_it_matches_specific_class(self):
         matcher = HostClass.of_type(list)
 
+        # pylint:disable=use-implicit-booleaness-not-comparison
         assert matcher == []
         assert [] == matcher
         assert matcher != set()
