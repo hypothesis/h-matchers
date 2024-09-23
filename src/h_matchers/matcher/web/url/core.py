@@ -84,7 +84,7 @@ class AnyURLCore(Matcher):
         "fragment": STRING_OR_NONE,
     }
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     # I can't see a way around it. We could use kwargs, but then auto complete
     # would be hard
     def __init__(
