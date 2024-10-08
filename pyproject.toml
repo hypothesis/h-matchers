@@ -165,8 +165,3 @@ module= [
   "tests.*",
 ]
 ignore_errors = true
-
-
-[tool.hdev]
-project_name = "h-matchers"
-project_type = "library"
