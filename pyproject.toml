@@ -2,6 +2,25 @@
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
+[project]
+dynamic = ["version"]
+name = "h-matchers"
+description = "Test objects which pass equality checks with other objects."
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+]
+requires-python = ">=3.9"
+dependencies = [
+]
+
+[project.urls]
+Repository = "https://github.com/hypothesis/h-matchers"
+Issues = "https://github.com/hypothesis/h-matchers/issues"
+Changelog = "https://github.com/hypothesis/h-matchers/releases"
+
 [tool.setuptools_scm]
 
 [tool.pytest.ini_options]
