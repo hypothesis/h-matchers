@@ -69,7 +69,7 @@ class DataTypes(enum.Enum):
         exclude = set(exclude or [])
         exact = exact or cls
 
-        return (example.value for example in exact if example not in exclude)
+        return [example.value for example in exact if example not in exclude]
 
 
 class Groups:
