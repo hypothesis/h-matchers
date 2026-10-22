@@ -10,9 +10,6 @@ from h_matchers import Any
 from h_matchers.matcher.collection import AnyMapping
 from h_matchers.matcher.web.request import AnyRequest
 
-# We have a lot of fixtures going on in this file
-# pylint: disable=too-many-arguments,too-many-positional-arguments
-
 
 class TestAnyRequest:
     @pytest.mark.parametrize(
